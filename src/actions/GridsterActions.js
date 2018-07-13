@@ -68,8 +68,8 @@ export function generateEnd() {
   });
 }
 
-// export function shortPath() {
-//   AppDispatcher.handleViewAction({
-//     actionType: GridsterConstants.SHORT_PATH
-//   });
-// }
+export function updateGravity() {
+  AppDispatcher.handleViewAction({
+    actionType: GridsterConstants.UPDATE_GRAVITY
+  });
+}

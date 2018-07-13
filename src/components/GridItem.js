@@ -60,32 +60,8 @@ export default class GridItem extends Component {
 
     let itemColour = '#F1F1F1';
 
-    if (this.state.grid !== undefined && this.state.grid[this.props.id].state === "initial") {
-      itemColour = '#F1F1F1';
-    }
-    if (this.state.grid !== undefined && this.state.grid[this.props.id].state === "hover") {
-      itemColour = '#F8F8F8';
-    }
-    if (this.state.grid !== undefined && this.state.grid[this.props.id].state === "down") {
-      itemColour = '#E2E2E2';
-    }
-    if (this.state.grid !== undefined && this.state.grid[this.props.id].clicked === "true") {
-      itemColour = '#FFF';
-    }
-    if (this.state.grid !== undefined && this.state.grid[this.props.id].path === "connected") {
-      itemColour = 'orange';
-    }
-    if (this.state.grid !== undefined && this.state.grid[this.props.id].clicked === "start") {
-      itemColour = '#0F0';
-    }
-    if (this.state.grid !== undefined && this.state.grid[this.props.id].clicked === "end") {
-      itemColour = '#7ED321';
-    }
-    if (this.state.grid !== undefined && this.state.grid[this.props.id].clicked === "true" && this.state.grid[this.props.id].state === "hover") {
-      itemColour = '#F8F8F8';
-    }
-    if (this.state.grid !== undefined && this.state.grid[this.props.id].path === "connected" && this.state.grid[this.props.id].state === "hover") {
-      itemColour = 'rgb(255, 201, 39)';
+    if (this.state.grid !== undefined && this.props.text === 1) {
+      itemColour = 'rgba(1, 1, 1, .7)';
     }
 
    return (
@@ -105,7 +81,6 @@ export default class GridItem extends Component {
         cursor: 'pointer',
         paddingBottom: this._widthCalc(this.state.columns)+'%',
         outline: 'solid 1px rgba(0, 0, 0, 0.2)'}}>
-        {this.props.text}
     </li>
 
     );

@@ -4,7 +4,7 @@ import GridsterStore from '../stores/GridsterStore.js';
 import Button from './Button';
 import Input from './Input';
 import Grid from './Grid';
-import { updateRow, updateColumn, generateGrid, generateStart, generateEnd} from '../actions/GridsterActions.js';
+import { updateRow, updateColumn, generateGrid, generateStart, generateEnd, updateGravity} from '../actions/GridsterActions.js';
 
 const spanStyle = {
   marginRight: '1rem',
@@ -34,6 +34,7 @@ export default class GridWidget extends Component {
     this._onChangeRows = this._onChangeRows.bind(this);
     this._onChange = this._onChange.bind(this);
     this._onGenerateGrid = this._onGenerateGrid.bind(this);
+    this._onGravity = this._onGravity.bind(this);
     this.state = {
       columns: 10,
       rows: 15,
@@ -80,9 +81,20 @@ export default class GridWidget extends Component {
     generateEnd();
   }
 
+  _onGravity() {
+    updateGravity();
+    console.log("graviity");
+
+  }
+
   render() {
     return (
       <div className="container">
+        <div className="inner-container">
+          <form>
+            <Button text="drop" onclick={this._onGravity}/>
+          </form>
+        </div>
         <div className="inner-container">
           <Grid
             grid={this.state.grid} columns="10" rows="15"

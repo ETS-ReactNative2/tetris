@@ -14,9 +14,9 @@ class App extends Component {
           Tetris.
         </h1>
         <p>
-          The grid should be set initially to something like 12 x 8;
+          The grid should be set initially to something like 10 x 15;
         </p>
-        <GridWidget columns="8" rows="12" />
+        <GridWidget columns="10" rows="15" />
       </div>
     );
   }

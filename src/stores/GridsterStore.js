@@ -15,7 +15,7 @@ let _store = {
   rows: 15,
   grid: [
     0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
@@ -434,6 +434,12 @@ AppDispatcher.register((payload) => {
     case GridsterConstants.UPDATE_COL:
 
       _store.columns = action.value;
+      GridsterStore.emit(CHANGE_EVENT);
+    break;
+
+    case GridsterConstants.UPDATE_GRAVITY:
+      // call function to update store here = add 10 cells to beginning - remove 10 cells at the end
+      console.log('newton would approve');
       GridsterStore.emit(CHANGE_EVENT);
     break;
 

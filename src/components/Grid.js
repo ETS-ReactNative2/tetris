@@ -23,8 +23,9 @@ export default class Grid extends Component {
         console.log('this.props.grid', this.props.grid);
 
       this.props.grid.map((item, index) => {
+        console.log('this.props.grid[item]', this.props.grid[index]);
         return rows.push(
-  			<GridItem key={index} id={index} text={this.props.grid[item]}/>
+  			<GridItem key={index} id={index} text={this.props.grid[index]}/>
   			);
       });
     }
