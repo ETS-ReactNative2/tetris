@@ -3,7 +3,7 @@
 // event emitter dependencies
 import AppDispatcher from '../dispatcher/AppDispatcher';
 import { GridsterConstants } from '../constants/GridsterConstants.js';
-import { EventEmitter }from 'events';
+import { EventEmitter } from 'events';
 
 EventEmitter.prototype._maxListeners = 200;
 
@@ -12,8 +12,25 @@ const CHANGE_EVENT = 'change';
 // Define the store as an empty array
 let _store = {
   columns: 10,
-  rows: 10,
-  grid: []
+  rows: 15,
+  grid: [
+    0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+  ]
 };
 
 // Define the public event listeners and getters that
@@ -39,9 +56,7 @@ function clearPath() {
   _store.grid.forEach((element, i) => {
     if (element.path === "connected"){
       element.path = null;
-      // element.distance = Infinity;
       element.counter = Infinity;
-      // element.visited = "unvisited";
     }
   })
 }

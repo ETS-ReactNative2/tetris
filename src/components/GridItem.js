@@ -3,11 +3,7 @@ import PropTypes from 'prop-types';
 
 import GridsterStore from '../stores/GridsterStore.js';
 
-import { generateClick } from '../actions/GridsterActions.js';
-import { mouseEnter } from '../actions/GridsterActions.js';
-import { mouseExit } from '../actions/GridsterActions.js';
-import { mouseDown } from '../actions/GridsterActions.js';
-// import { shortPath } from '../actions/GridsterActions.js';
+import { generateClick, mouseEnter, mouseExit, mouseDown } from '../actions/GridsterActions.js';
 
 export default class GridItem extends Component {
 
@@ -21,8 +17,8 @@ export default class GridItem extends Component {
     this._onMouseDown = this._onMouseDown.bind(this);
 
     this.state = {
-      columns: 10,
-      rows: 10
+      columns: 8,
+      rows: 12
     };
   }
 
@@ -91,15 +87,16 @@ export default class GridItem extends Component {
     if (this.state.grid !== undefined && this.state.grid[this.props.id].path === "connected" && this.state.grid[this.props.id].state === "hover") {
       itemColour = 'rgb(255, 201, 39)';
     }
+
    return (
 
     <li
       id={this.props.id}
-      onClick={this._onClick}
-      onMouseEnter={this._onMouseEnter}
-      onMouseLeave={this._onMouseLeave}
-      onMouseDown={this._onMouseDown}
-      clicked={this.state.clicked}
+      // onClick={this._onClick}
+      // onMouseEnter={this._onMouseEnter}
+      // onMouseLeave={this._onMouseLeave}
+      // onMouseDown={this._onMouseDown}
+      // clicked={this.state.clicked}
       style={{
         display: 'inline-block',
         float: 'left',
@@ -108,6 +105,7 @@ export default class GridItem extends Component {
         cursor: 'pointer',
         paddingBottom: this._widthCalc(this.state.columns)+'%',
         outline: 'solid 1px rgba(0, 0, 0, 0.2)'}}>
+        {this.props.text}
     </li>
 
     );

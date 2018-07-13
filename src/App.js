@@ -10,16 +10,13 @@ class App extends Component {
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
         </header>
-        <p className="App-intro">
-          Try to connect the start and end blocks that are coloured green.
-        </p>
+        <h1 className="App-intro">
+          Tetris.
+        </h1>
         <p>
-          You can input any value up to 20 for either columns or rows in the grid. The default is 10 x 10.
+          The grid should be set initially to something like 12 x 8;
         </p>
-        <p>
-          To generate the grid, hit the <i>generate</i> button. Good luck!
-        </p>
-        <GridWidget />
+        <GridWidget columns="8" rows="12" />
       </div>
     );
   }

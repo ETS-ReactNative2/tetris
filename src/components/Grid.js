@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-// import GridsterStore from '../stores/GridsterStore.js';
 import GridItem from './GridItem';
 import PropTypes from 'prop-types';
 
@@ -15,12 +14,17 @@ const ulStyle = {
 export default class Grid extends Component {
 
   render() {
+    console.log('GRID here');
+    console.log('this.props', this.props);
 
    let rows = [];
-    if (this.props.grid) {
+    if ((this.props.rows * this.props.columns) > 0) {
+        console.log('this.props.rows * this.props.columns', this.props.rows * this.props.columns);
+        console.log('this.props.grid', this.props.grid);
+
       this.props.grid.map((item, index) => {
         return rows.push(
-  			<GridItem key={index} id={index}/>
+  			<GridItem key={index} id={index} text={this.props.grid[item]}/>
   			);
       });
     }

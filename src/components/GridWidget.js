@@ -4,11 +4,7 @@ import GridsterStore from '../stores/GridsterStore.js';
 import Button from './Button';
 import Input from './Input';
 import Grid from './Grid';
-import { updateRow } from '../actions/GridsterActions.js';
-import { updateColumn } from '../actions/GridsterActions.js';
-import { generateGrid } from '../actions/GridsterActions.js';
-import { generateStart } from '../actions/GridsterActions.js';
-import { generateEnd } from '../actions/GridsterActions.js';
+import { updateRow, updateColumn, generateGrid, generateStart, generateEnd} from '../actions/GridsterActions.js';
 
 const spanStyle = {
   marginRight: '1rem',
@@ -40,7 +36,7 @@ export default class GridWidget extends Component {
     this._onGenerateGrid = this._onGenerateGrid.bind(this);
     this.state = {
       columns: 10,
-      rows: 10,
+      rows: 15,
       grid: []
     };
   }
@@ -88,25 +84,8 @@ export default class GridWidget extends Component {
     return (
       <div className="container">
         <div className="inner-container">
-          <form>
-            <Input
-              name="Rows"
-              value={this.state.rows}
-              onchange={this._onChangeRows}
-            />
-            <span style={spanStyle}> x </span>
-            <Input
-              name="Columns"
-              value={this.state.columns}
-              onchange={this._onChangeCols}
-            />
-
-            <Button text="Generate" onclick={this._onGenerateGrid}/>
-          </form>
-        </div>
-        <div className="inner-container">
           <Grid
-            grid={this.state.grid}
+            grid={this.state.grid} columns="10" rows="15"
           />
         </div>
     </div>
