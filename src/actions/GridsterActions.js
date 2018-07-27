@@ -73,3 +73,10 @@ export function updateGravity() {
     actionType: GridsterConstants.UPDATE_GRAVITY
   });
 }
+
+export function keyDown(key) {
+  AppDispatcher.handleViewAction({
+    actionType: GridsterConstants.KEY_DOWN,
+    key: key
+  });
+}
