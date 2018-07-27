@@ -12,7 +12,7 @@ const CHANGE_EVENT = 'change';
 // Define the store as an empty array
 let _store = {
   columns: 10,
-  rows: 15,
+  rows: 16,
   grid: [
     0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 
     0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 
@@ -405,6 +405,19 @@ function ycoord(number) {
   return ( 1 + parseInt(number/_store.columns, 10));
 }
 
+function addTop() {
+  console.log('this is where we add cells to top or beginning of array', _store.columns);
+  // use unshift 
+  _store.grid.unshift(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+}
+
+function removeBottom() {
+  console.log('number', _store.columns * _store.rows);
+
+  console.log('this is where we remove cells from bottom or end', (_store.columns * _store.rows) - _store.columns -1);
+  _store.grid.splice((_store.columns * _store.rows) - _store.columns -1, _store.columns);
+}
+
 // Initialize the singleton to register with the
 // dispatcher and export for React components
 const GridsterStore = new GridsterStoreClass();
@@ -439,7 +452,9 @@ AppDispatcher.register((payload) => {
 
     case GridsterConstants.UPDATE_GRAVITY:
       // call function to update store here = add 10 cells to beginning - remove 10 cells at the end
-      console.log('newton would approve');
+      removeBottom();
+      addTop();
+
       GridsterStore.emit(CHANGE_EVENT);
     break;
 

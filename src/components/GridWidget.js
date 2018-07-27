@@ -37,7 +37,7 @@ export default class GridWidget extends Component {
     this._onGravity = this._onGravity.bind(this);
     this.state = {
       columns: 10,
-      rows: 15,
+      rows: 16,
       grid: []
     };
   }
@@ -84,7 +84,6 @@ export default class GridWidget extends Component {
   _onGravity() {
     updateGravity();
     console.log("graviity");
-
   }
 
   render() {

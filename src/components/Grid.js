@@ -19,8 +19,8 @@ export default class Grid extends Component {
 
    let rows = [];
     if ((this.props.rows * this.props.columns) > 0) {
-        console.log('this.props.rows * this.props.columns', this.props.rows * this.props.columns);
-        console.log('this.props.grid', this.props.grid);
+        // console.log('this.props.rows * this.props.columns', this.props.rows * this.props.columns);
+        // console.log('this.props.grid', this.props.grid);
 
       this.props.grid.map((item, index) => {
         console.log('this.props.grid[item]', this.props.grid[index]);
