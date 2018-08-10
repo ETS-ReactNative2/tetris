@@ -74,6 +74,12 @@ export function updateGravity() {
   });
 }
 
+export function moveRight() {
+  AppDispatcher.handleViewAction({
+    actionType: GridsterConstants.MOVE_RIGHT
+  });
+}
+
 export function keyDown(key) {
   AppDispatcher.handleViewAction({
     actionType: GridsterConstants.KEY_DOWN,

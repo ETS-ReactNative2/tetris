@@ -4,7 +4,7 @@ import GridsterStore from '../stores/GridsterStore.js';
 import Button from './Button';
 import Input from './Input';
 import Grid from './Grid';
-import { updateRow, updateColumn, generateGrid, generateStart, generateEnd, updateGravity, keyDown} from '../actions/GridsterActions.js';
+import { updateRow, updateColumn, generateGrid, generateStart, generateEnd, updateGravity, moveRight, keyDown} from '../actions/GridsterActions.js';
 
 const spanStyle = {
   marginRight: '1rem',
@@ -35,6 +35,7 @@ export default class GridWidget extends Component {
     this._onChange = this._onChange.bind(this);
     this._onGenerateGrid = this._onGenerateGrid.bind(this);
     this._onGravity = this._onGravity.bind(this);
+    this._onRight = this._onRight.bind(this);
     this._onKeyDown = this._onKeyDown.bind(this);
     this.state = {
       columns: 10,
@@ -86,6 +87,10 @@ export default class GridWidget extends Component {
     updateGravity();
   }
 
+  _onRight() {
+    moveRight();
+  }
+
   _onKeyDown(e) {
     console.log("key pressed", e);
     keyDown();
@@ -94,13 +99,13 @@ export default class GridWidget extends Component {
   render() {
     return (
       <div className="container">
-        <div className="inner-container" onKeyPress={this._onKeyDown}>
+        <div className="inner-container" >
           <form>
             <Button text="drop" onclick={this._onGravity} />
-            <input type="text" id="one" onKeyDown={this._onKeyDown} />
+            <Button text="right" onclick={this._onRight} />
           </form>
         </div>
-        <div className="inner-container" onKeyDown={this._onKeyDown}>
+        <div className="inner-container" >
           <Grid
             grid={this.state.grid} columns="10" rows="15"
           />

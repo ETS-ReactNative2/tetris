@@ -406,15 +406,89 @@ function ycoord(number) {
 }
 
 function addTop() {
-  console.log('this is where we add cells to top or beginning of array', _store.columns);
+  // console.log('this is where we add cells to top or beginning of array', _store.columns);
   // use unshift 
   _store.grid.unshift(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 }
 
-function removeBottom() {
-  console.log('number', _store.columns * _store.rows);
+function addLeft() {
+  // console.log('this is where we add cells to top or Left of array', _store.columns);
+  // use unshift 
+  // _store.grid.unshift(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  console.log('_store.columns', _store.columns);
+  console.log('_store.rows', _store.rows);
+}
 
-  console.log('this is where we remove cells from bottom or end', (_store.columns * _store.rows) - _store.columns -1);
+function addRight() {
+  // console.log('this is where we add cells to top or Right of the array', _store.columns);
+  // use unshift 
+  // _store.grid.unshift(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  console.log('_store.columns', _store.columns);
+  console.log('_store.rows', _store.rows);
+}
+
+function removeRight() {
+  // console.log('this is where we add cells to top or Right of the array', _store.columns);
+  // use unshift 
+  // _store.grid.unshift(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  console.log('_store.columns', _store.columns);
+  console.log('_store.rows', _store.rows);
+}
+
+function moveRight() {
+  // use splice to insert item in an array
+  // can also be used to remove items form an array
+  // remove first then insert
+  // _store.grid.unshift(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  console.log('_store.columns', _store.columns);
+  console.log('_store.rows', _store.rows);
+  console.log('_store.grid.length', _store.grid.length);
+  let grid = _store.grid;
+  if (_store.grid && _store.columns && _store.rows) {
+    // remove last item in row
+    // loop over every item in _store.grid
+    let items = _store.grid.length;
+    console.log('items', items);
+
+    _store.grid.forEach(function(item, index) {
+      // console.log('index', index);
+      // console.log('index modulus', index % _store.columns );
+
+      if ((index % _store.columns) == 0) {
+        // console.log('item', item);
+        console.log('index', index);
+      }
+
+      if ((index % ( _store.columns - 1) ) == 0) {
+        // console.log('item', item);
+        console.log('index2', index);
+      }
+
+    })
+    console.log('items', items);
+    // add first item to row
+  }
+}
+
+function moveLeft() {
+  // console.log('this is where we add cells to top or Right of the array', _store.columns);
+  // use unshift n 
+  // _store.grid.unshift(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  console.log('_store.columns', _store.columns);
+  console.log('_store.rows', _store.rows);
+}
+
+function removeLeft() {
+  // console.log('this is where we add cells to top or Right of the array', _store.columns);
+  // use unshift 
+  // _store.grid.unshift(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  console.log('_store.columns', _store.columns);
+  console.log('_store.rows', _store.rows);
+}
+
+function removeBottom() {
+  // console.log('number', _store.columns * _store.rows);
+  // console.log('this is where we remove cells from bottom or end', (_store.columns * _store.rows) - _store.columns -1);
   _store.grid.splice((_store.columns * _store.rows) - _store.columns -1, _store.columns);
 }
 
@@ -454,7 +528,12 @@ AppDispatcher.register((payload) => {
       // call function to update store here = add 10 cells to beginning - remove 10 cells at the end
       removeBottom();
       addTop();
+      GridsterStore.emit(CHANGE_EVENT);
+    break;
 
+    case GridsterConstants.MOVE_RIGHT:
+      // call function to update store here = add 10 cells to beginning - remove 10 cells at the end
+      moveRight();
       GridsterStore.emit(CHANGE_EVENT);
     break;
 
