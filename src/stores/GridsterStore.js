@@ -453,16 +453,22 @@ function moveRight() {
     _store.grid.forEach(function(item, index) {
       // console.log('index', index);
       // console.log('index modulus', index % _store.columns );
-
+      
+      // find first item in row and remove
       if ((index % _store.columns) == 0) {
         // console.log('item', item);
         console.log('index', index);
       }
 
+      // find last item in row and add item 
+      // here we can check if rows x columns = number of items in array
+      // if not it is time to remove one
       if ((index % ( _store.columns - 1) ) == 0) {
         // console.log('item', item);
         console.log('index2', index);
       }
+
+      // if rows x columns - number of items in the cell, we can add one if it is the first item
 
     })
     console.log('items', items);
