@@ -411,6 +411,10 @@ function addTop() {
   _store.grid.unshift(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 }
 
+/**
+ * This function moves everything on the canvas to the right
+ * Updates the state in the store
+ */
 function moveRight() {
 
   let $first_col_item;
@@ -436,12 +440,27 @@ function moveClockwise() {
 
 }
 
+/**
+ * This function moves everything on the canvas to the left
+ * Updates the state in the store
+ */
 function moveLeft() {
-  // console.log('this is where we add cells to top or Right of the array', _store.columns);
-  // use unshift n
-  // _store.grid.unshift(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  console.log('_store.columns', _store.columns);
-  console.log('_store.rows', _store.rows);
+  console.log(_store.grid);
+
+  let $first_col_item;
+  let $last_col_item;
+
+  for (let rows = _store.rows; rows > 0; rows--) {
+    $last_col_item = (rows * _store.columns);
+    console.log($last_col_item);
+
+    $first_col_item = $last_col_item - (_store.columns - 1);
+    _store.grid = removeItem(_store.grid, $first_col_item);
+
+    _store.grid = addItem(_store.grid, $last_col_item);
+  }
+  console.log(_store.grid);
+
 }
 
 function removeLeft() {
