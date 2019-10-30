@@ -14,22 +14,22 @@ let _store = {
   columns: 10,
   rows: 16,
   grid: [
-    0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 
-    0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
+    0, 0, 0, 1, 1, 1, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
   ]
 };
 
@@ -54,7 +54,7 @@ class GridsterStoreClass extends EventEmitter {
 
 function clearPath() {
   _store.grid.forEach((element, i) => {
-    if (element.path === "connected"){
+    if (element.path === "connected") {
       element.path = null;
       element.counter = Infinity;
     }
@@ -67,29 +67,29 @@ function connectPath(array) {
   })
 }
 
-function checkTop(x, y, targetX, targetY){
-  if(x === targetX && y + 1 === targetY ){
+function checkTop(x, y, targetX, targetY) {
+  if (x === targetX && y + 1 === targetY) {
     // console.log('checkstart top');
     return true;
   }
 }
 
-function checkRight(x, y, targetX, targetY){
-  if(x === targetX + 1 && y === targetY ){
+function checkRight(x, y, targetX, targetY) {
+  if (x === targetX + 1 && y === targetY) {
     // console.log('checkstart right');
     return true;
   }
 }
 
-function checkBottom(x, y, targetX, targetY){
-  if(x === targetX && y - 1 === targetY ){
+function checkBottom(x, y, targetX, targetY) {
+  if (x === targetX && y - 1 === targetY) {
     // console.log('checkstart bottom');
     return true;
   }
 }
 
-function checkLeft(x, y, targetX, targetY){
-  if(x === targetX - 1 && y === targetY ){
+function checkLeft(x, y, targetX, targetY) {
+  if (x === targetX - 1 && y === targetY) {
     // console.log('checkstart left');
     return true;
   }
@@ -102,28 +102,28 @@ function checkLeft(x, y, targetX, targetY){
 */
 function checkStart(cellX, cellY, startX, startY) {
   // top
-  if(checkTop(cellX, cellY, startX, startY)) {
+  if (checkTop(cellX, cellY, startX, startY)) {
     return true;
   }
   //right
-  if(checkRight(cellX, cellY, startX, startY)) {
+  if (checkRight(cellX, cellY, startX, startY)) {
     return true;
   }
   //bottom
-  if(checkBottom(cellX, cellY, startX, startY)) {
+  if (checkBottom(cellX, cellY, startX, startY)) {
     return true;
   }
   // left
-  if(checkLeft(cellX, cellY  , startX, startY)) {
+  if (checkLeft(cellX, cellY, startX, startY)) {
     return true;
   }
 }
 
 
-/* 
-  iterates through @unvisited cells 
+/*
+  iterates through @unvisited cells
   starting at @end cell until it is next to @start cell
-  i.e. 0, 0+1, 0+1+1, 0+1+1+1 
+  i.e. 0, 0+1, 0+1+1, 0+1+1+1
   until count item is next to end
   || if not available i.e cell end is not end, and none other available return
   // needs to fail if next item is not one more htan previous!!!
@@ -138,21 +138,21 @@ function isPath(unvisited, end, start) {
 
   while (match === false && next === true) {
 
-    let uncountedItems = unvisited.filter((obj => (obj.counter > counter) ));
+    let uncountedItems = unvisited.filter((obj => (obj.counter > counter)));
 
-    if(uncountedItems.length === 0) {
+    if (uncountedItems.length === 0) {
       next = false;
     }
-    //queue is array object where counter = counter 
-    let matchedItems = _store.grid.filter((obj => (obj.counter === counter) ));
+    //queue is array object where counter = counter
+    let matchedItems = _store.grid.filter((obj => (obj.counter === counter)));
     // if (matchedItems.length > 1) {
     //   console.log('matched items more than one');
     //   console.log('matchedItems', matchedItems);
     // }
-    if(matchedItems.length === 0) {
+    if (matchedItems.length === 0) {
       next = false;
     }
-    if(matchedItems.length !== 0 && start.length !== 0 && uncountedItems.length !== 0) {
+    if (matchedItems.length !== 0 && start.length !== 0 && uncountedItems.length !== 0) {
 
       matchedItems.forEach(function(matchCell) {
         //iterate through start array
@@ -161,7 +161,7 @@ function isPath(unvisited, end, start) {
 
           uncountedItems.forEach(function(element) {
 
-            if(checkTop(element.x, element.y, matchCell.x, matchCell.y)) {
+            if (checkTop(element.x, element.y, matchCell.x, matchCell.y)) {
               element.counter = counter + 1;
               countedCells.push(element);
               if (checkStart(element.x, element.y, startCell.x, startCell.y)) {
@@ -169,7 +169,7 @@ function isPath(unvisited, end, start) {
               }
             }
 
-            if(checkRight(element.x, element.y, matchCell.x, matchCell.y)) {
+            if (checkRight(element.x, element.y, matchCell.x, matchCell.y)) {
               element.counter = counter + 1;
               countedCells.push(element);
               if (checkStart(element.x, element.y, startCell.x, startCell.y)) {
@@ -177,7 +177,7 @@ function isPath(unvisited, end, start) {
               }
             }
 
-            if(checkBottom(element.x, element.y, matchCell.x, matchCell.y)) {
+            if (checkBottom(element.x, element.y, matchCell.x, matchCell.y)) {
               element.counter = counter + 1;
               countedCells.push(element);
               if (checkStart(element.x, element.y, startCell.x, startCell.y)) {
@@ -185,7 +185,7 @@ function isPath(unvisited, end, start) {
               }
             }
 
-            if(checkLeft(element.x, element.y, matchCell.x, matchCell.y)) {
+            if (checkLeft(element.x, element.y, matchCell.x, matchCell.y)) {
               element.counter = counter + 1;
               countedCells.push(element);
               if (checkStart(element.x, element.y, startCell.x, startCell.y)) {
@@ -195,15 +195,15 @@ function isPath(unvisited, end, start) {
 
           })
         })
-    })
+      })
 
-    counter = counter + 1;
+      counter = counter + 1;
 
     }
 
   }
 
-  if (match === true ) {
+  if (match === true) {
     return true;
   }
 
@@ -214,7 +214,7 @@ function shortestPath(counted, end, start) {
   let counter = 0;
 
   counted.forEach(function(count) {
-    if(count.counter > counter) {
+    if (count.counter > counter) {
       counter = count.counter;
     }
   })
@@ -232,28 +232,28 @@ function shortestPath(counted, end, start) {
 
       start.forEach(function(startCell) {
 
-        counted.forEach(function(item, i){
-           // top
-          if(checkTop(item.x, item.y, startCell.x, startCell.y)) {
-            if(item.counter === counter) {
+        counted.forEach(function(item, i) {
+          // top
+          if (checkTop(item.x, item.y, startCell.x, startCell.y)) {
+            if (item.counter === counter) {
               shortestPath.push(item);
             }
           }
           //right
-          if(checkRight(item.x, item.y, startCell.x, startCell.y)) {
-            if(item.counter === counter) {
+          if (checkRight(item.x, item.y, startCell.x, startCell.y)) {
+            if (item.counter === counter) {
               shortestPath.push(item);
             }
           }
           //bottom
-          if(checkBottom(item.x, item.y, startCell.x, startCell.y)) {
-            if(item.counter === counter) {
+          if (checkBottom(item.x, item.y, startCell.x, startCell.y)) {
+            if (item.counter === counter) {
               shortestPath.push(item);
             }
           }
           //left
-          if(checkLeft(item.x, item.y, startCell.x, startCell.y)) {
-            if(item.counter === counter) {
+          if (checkLeft(item.x, item.y, startCell.x, startCell.y)) {
+            if (item.counter === counter) {
               shortestPath.push(item);
             }
           }
@@ -264,8 +264,8 @@ function shortestPath(counted, end, start) {
 
     let lowestNumber = Infinity;
     // get neighboure - for each neighbour take the lowest count ...
-    if(shortestPath.length !== 0){
-      shortestPath.forEach(function(cell, c){
+    if (shortestPath.length !== 0) {
+      shortestPath.forEach(function(cell, c) {
         if (cell.counter < lowestNumber) {
           lowestNumber = cell.counter;
         }
@@ -274,7 +274,7 @@ function shortestPath(counted, end, start) {
 
     // container for lowest items
     let nextLowest = [];
-    if(shortestPath.length !== 0){
+    if (shortestPath.length !== 0) {
       //take item with least count ....
       shortestPath.forEach(function(cell, c) {
         if (cell.counter === lowestNumber) {
@@ -283,35 +283,35 @@ function shortestPath(counted, end, start) {
       })
     }
 
-    if(nextLowest.length > 1) {
+    if (nextLowest.length > 1) {
       console.log('nextLowest more than one ', nextLowest);
     }
-    if(nextLowest.length !==0 && counted.length !==0) {
+    if (nextLowest.length !== 0 && counted.length !== 0) {
 
-      counted.forEach(function(item){
+      counted.forEach(function(item) {
 
-        nextLowest.forEach(function(nextItem){
+        nextLowest.forEach(function(nextItem) {
           // top
-          if(checkTop(item.x, item.y, nextItem.x, nextItem.y)) {
-            if(item.counter === counter) {
+          if (checkTop(item.x, item.y, nextItem.x, nextItem.y)) {
+            if (item.counter === counter) {
               shortestPath.push(item);
             }
           }
           //right
-          if(checkRight(item.x, item.y, nextItem.x, nextItem.y)) {
-            if(item.counter === counter) {
+          if (checkRight(item.x, item.y, nextItem.x, nextItem.y)) {
+            if (item.counter === counter) {
               shortestPath.push(item);
             }
           }
           //bottom
-          if(checkBottom(item.x, item.y, nextItem.x, nextItem.y)) {
-            if(item.counter === counter) {
+          if (checkBottom(item.x, item.y, nextItem.x, nextItem.y)) {
+            if (item.counter === counter) {
               shortestPath.push(item);
             }
           }
           //left
-          if(checkLeft(item.x, item.y, nextItem.x, nextItem.y)) {
-            if(item.counter === counter) {
+          if (checkLeft(item.x, item.y, nextItem.x, nextItem.y)) {
+            if (item.counter === counter) {
               shortestPath.push(item);
             }
           }
@@ -325,9 +325,9 @@ function shortestPath(counted, end, start) {
 
   }
 
-  if(counter === 0 && shortestPath.length !== 0 ) {
+  if (counter === 0 && shortestPath.length !== 0) {
     shortestPath.forEach(function(cell) {
-      if(cell.counter === 1 ) {
+      if (cell.counter === 1) {
         // console.log("Paint Shortest Path");
         // clearPath();
         connectPath(shortestPath);
@@ -335,7 +335,7 @@ function shortestPath(counted, end, start) {
     })
   }
 
-  if (counter === 0 ) {
+  if (counter === 0) {
     return true;
   }
 
@@ -345,7 +345,7 @@ function pathFinder(unvisited, end, start) {
 
   if (isPath(unvisited, end, start)) {
 
-    let countedCells = _store.grid.filter((obj => (obj.counter !== Infinity && obj.clicked !== "end") ));
+    let countedCells = _store.grid.filter((obj => (obj.counter !== Infinity && obj.clicked !== "end")));
 
     if (shortestPath(countedCells, end, start)) {
       console.log('Found shortest path!!')
@@ -356,7 +356,7 @@ function pathFinder(unvisited, end, start) {
 }
 
 /*
-  accepts array of objects  
+  accepts array of objects
   if one of @unvisited cells is next to @end
   if match calls pathFinder function passing, @unvisited cells, @start and @end
 */
@@ -364,29 +364,29 @@ function isEndVisited(unvisited, end, start) {
   //clear path to start
   clearPath();
   //need some way of checking if path exits before as we have no way of knowing
-  if(end.length > 1) {
+  if (end.length > 1) {
     console.log('multiple ends!!');
   }
 
-  if(unvisited.length !== 0 && end.length !== 0) {
+  if (unvisited.length !== 0 && end.length !== 0) {
 
     end.forEach(function(enditem, j) {
 
       unvisited.forEach(function(element, i) {
         // top
-        if(checkTop(element.x, element.y, enditem.x, enditem.y)) {
+        if (checkTop(element.x, element.y, enditem.x, enditem.y)) {
           pathFinder(unvisited, end, start);
         }
-         // right
-        if(checkRight(element.x, element.y, enditem.x, enditem.y)) {
+        // right
+        if (checkRight(element.x, element.y, enditem.x, enditem.y)) {
           pathFinder(unvisited, end, start);
         }
         // bottom
-        if(checkBottom(element.x, element.y, enditem.x, enditem.y)) {
+        if (checkBottom(element.x, element.y, enditem.x, enditem.y)) {
           pathFinder(unvisited, end, start);
         }
         // left
-        if(checkLeft(element.x, element.y, enditem.x, enditem.y)) {
+        if (checkLeft(element.x, element.y, enditem.x, enditem.y)) {
           pathFinder(unvisited, end, start);
         }
 
@@ -398,87 +398,47 @@ function isEndVisited(unvisited, end, start) {
 }
 
 function xcoord(number) {
-  return ( 1 + ((number%_store.columns)));
+  return (1 + ((number % _store.columns)));
 }
 
 function ycoord(number) {
-  return ( 1 + parseInt(number/_store.columns, 10));
+  return (1 + parseInt(number / _store.columns, 10));
 }
 
 function addTop() {
   // console.log('this is where we add cells to top or beginning of array', _store.columns);
-  // use unshift 
+  // use unshift
   _store.grid.unshift(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 }
 
-function addLeft() {
-  // console.log('this is where we add cells to top or Left of array', _store.columns);
-  // use unshift 
-  // _store.grid.unshift(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  console.log('_store.columns', _store.columns);
-  console.log('_store.rows', _store.rows);
-}
-
-function addRight() {
-  // console.log('this is where we add cells to top or Right of the array', _store.columns);
-  // use unshift 
-  // _store.grid.unshift(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  console.log('_store.columns', _store.columns);
-  console.log('_store.rows', _store.rows);
-}
-
-function removeRight() {
-  // console.log('this is where we add cells to top or Right of the array', _store.columns);
-  // use unshift 
-  // _store.grid.unshift(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  console.log('_store.columns', _store.columns);
-  console.log('_store.rows', _store.rows);
-}
-
 function moveRight() {
-  // use splice to insert item in an array
-  // can also be used to remove items form an array
-  // remove first then insert
-  // _store.grid.unshift(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  console.log('_store.columns', _store.columns);
-  console.log('_store.rows', _store.rows);
-  console.log('_store.grid.length', _store.grid.length);
-  let grid = _store.grid;
-  if (_store.grid && _store.columns && _store.rows) {
-    // remove last item in row
-    // loop over every item in _store.grid
-    let items = _store.grid.length;
-    console.log('items', items);
 
-    _store.grid.forEach(function(item, index) {
-      // console.log('index', index);
-      // console.log('index modulus', index % _store.columns );
-      
-      // find first item in row and remove
-      if ((index % _store.columns) == 0) {
-        // console.log('item', item);
-        console.log('index', index);
-      }
+  let $first_col_item;
+  let $last_col_item;
 
-      // find last item in row and add item 
-      // here we can check if rows x columns = number of items in array
-      // if not it is time to remove one
-      if ((index % ( _store.columns - 1) ) == 0) {
-        // console.log('item', item);
-        console.log('index2', index);
-      }
-
-      // if rows x columns - number of items in the cell, we can add one if it is the first item
-
-    })
-    console.log('items', items);
-    // add first item to row
+  for (let rows = _store.rows; rows > 0; rows--) {
+    $last_col_item = (rows * _store.columns) - 1;
+    _store.grid = removeItem(_store.grid, $last_col_item);
+    $first_col_item = $last_col_item - (_store.columns - 1);
+    _store.grid = addItem(_store.grid, $first_col_item);
   }
+}
+
+function addItem(items, i) {
+  let $new = items.splice(i, 0, 0);
+  return items;
+}
+
+const removeItem = (items, i) =>
+  items.slice(0, i - 1).concat(items.slice(i, items.length));
+
+function moveClockwise() {
+
 }
 
 function moveLeft() {
   // console.log('this is where we add cells to top or Right of the array', _store.columns);
-  // use unshift n 
+  // use unshift n
   // _store.grid.unshift(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   console.log('_store.columns', _store.columns);
   console.log('_store.rows', _store.rows);
@@ -486,7 +446,7 @@ function moveLeft() {
 
 function removeLeft() {
   // console.log('this is where we add cells to top or Right of the array', _store.columns);
-  // use unshift 
+  // use unshift
   // _store.grid.unshift(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
   console.log('_store.columns', _store.columns);
   console.log('_store.rows', _store.rows);
@@ -495,7 +455,7 @@ function removeLeft() {
 function removeBottom() {
   // console.log('number', _store.columns * _store.rows);
   // console.log('this is where we remove cells from bottom or end', (_store.columns * _store.rows) - _store.columns -1);
-  _store.grid.splice((_store.columns * _store.rows) - _store.columns -1, _store.columns);
+  _store.grid.splice((_store.columns * _store.rows) - _store.columns - 1, _store.columns);
 }
 
 // Initialize the singleton to register with the
@@ -509,7 +469,7 @@ AppDispatcher.register((payload) => {
 
   const action = payload.action;
 
-  switch(action.actionType) {
+  switch (action.actionType) {
 
     case GridsterConstants.UPDATE_ITEM:
 
@@ -522,26 +482,38 @@ AppDispatcher.register((payload) => {
 
       _store.rows = action.value;
       GridsterStore.emit(CHANGE_EVENT);
-    break;
+      break;
 
     case GridsterConstants.UPDATE_COL:
 
       _store.columns = action.value;
       GridsterStore.emit(CHANGE_EVENT);
-    break;
+      break;
 
     case GridsterConstants.UPDATE_GRAVITY:
       // call function to update store here = add 10 cells to beginning - remove 10 cells at the end
       removeBottom();
       addTop();
       GridsterStore.emit(CHANGE_EVENT);
-    break;
+      break;
 
     case GridsterConstants.MOVE_RIGHT:
       // call function to update store here = add 10 cells to beginning - remove 10 cells at the end
       moveRight();
       GridsterStore.emit(CHANGE_EVENT);
-    break;
+      break;
+
+    case GridsterConstants.MOVE_LEFT:
+      // call function to update store here = add 10 cells to beginning - remove 10 cells at the end
+      moveLeft();
+      GridsterStore.emit(CHANGE_EVENT);
+      break;
+
+    case GridsterConstants.MOVE_CLOCKWISE:
+      // call function to update store here = add 10 cells to beginning - remove 10 cells at the end
+      moveClockwise();
+      GridsterStore.emit(CHANGE_EVENT);
+      break;
 
     case GridsterConstants.GENERATE_GRID:
 
@@ -549,38 +521,38 @@ AppDispatcher.register((payload) => {
 
       let newCells = [];
 
-      for(let i=0;i<total;i++){
-        newCells.push({'id': i, 'clicked' : "false", 'state': "initial", 'x' : xcoord(i), 'y': ycoord(i) , 'path': null, 'flag': false, 'counter': Infinity});
+      for (let i = 0; i < total; i++) {
+        newCells.push({ 'id': i, 'clicked': "false", 'state': "initial", 'x': xcoord(i), 'y': ycoord(i), 'path': null, 'flag': false, 'counter': Infinity });
       }
 
       _store.grid = newCells;
 
       GridsterStore.emit(CHANGE_EVENT);
-    break;
+      break;
 
     case GridsterConstants.GENERATE_CLICK:
 
       let clickIndex = _store.grid.findIndex((obj => obj.id === parseInt(action.value, 10)));
 
-      if(_store.grid[clickIndex].clicked === "false" && clickIndex !== _store.start.id && clickIndex !== _store.end.id) {
+      if (_store.grid[clickIndex].clicked === "false" && clickIndex !== _store.start.id && clickIndex !== _store.end.id) {
         _store.grid[clickIndex].clicked = "true";
-      } else if(_store.grid[clickIndex].clicked === "true" && clickIndex !== _store.start.id && clickIndex !== _store.end.id) {
-          _store.grid[clickIndex].clicked = "false";
-          // 
+      } else if (_store.grid[clickIndex].clicked === "true" && clickIndex !== _store.start.id && clickIndex !== _store.end.id) {
+        _store.grid[clickIndex].clicked = "false";
+        //
       }
 
       // on click check for connection
-      let unVisited = _store.grid.filter((obj => (obj.clicked === "true") ));
+      let unVisited = _store.grid.filter((obj => (obj.clicked === "true")));
 
-      let end = _store.grid.filter((obj => (obj.clicked === "end") ));
+      let end = _store.grid.filter((obj => (obj.clicked === "end")));
 
-      let start = _store.grid.filter((obj => (obj.clicked === "start") ));
+      let start = _store.grid.filter((obj => (obj.clicked === "start")));
 
       isEndVisited(unVisited, end, start);
 
       GridsterStore.emit(CHANGE_EVENT);
 
-    break;
+      break;
 
 
     case GridsterConstants.MOUSE_ENTER:
@@ -591,7 +563,7 @@ AppDispatcher.register((payload) => {
 
       GridsterStore.emit(CHANGE_EVENT);
 
-    break;
+      break;
 
     case GridsterConstants.MOUSE_EXIT:
 
@@ -600,7 +572,7 @@ AppDispatcher.register((payload) => {
       _store.grid[exitIndex].state = "initial";
 
       GridsterStore.emit(CHANGE_EVENT);
-    break;
+      break;
 
     case GridsterConstants.MOUSE_DOWN:
 
@@ -609,35 +581,35 @@ AppDispatcher.register((payload) => {
       _store.grid[downIndex].state = "down";
 
       GridsterStore.emit(CHANGE_EVENT);
-    break;
+      break;
 
-    case GridsterConstants.GENERATE_START:
+      // case GridsterConstants.GENERATE_START:
 
-      let startRow = parseInt(Math.random()*_store.rows, 10);
-      let startCell = startRow * _store.columns;
-      _store.start = {'id': startCell, 'x': xcoord(startCell), 'y': ycoord(startCell)};
+      //   let startRow = parseInt(Math.random() * _store.rows, 10);
+      //   let startCell = startRow * _store.columns;
+      //   _store.start = { 'id': startCell, 'x': xcoord(startCell), 'y': ycoord(startCell) };
 
-      let startIndex = _store.grid.findIndex((obj => obj.id === parseInt(startCell, 10)));
+      //   let startIndex = _store.grid.findIndex((obj => obj.id === parseInt(startCell, 10)));
 
-      _store.grid[startIndex].clicked = "start";
+      //   _store.grid[startIndex].clicked = "start";
 
-      GridsterStore.emit(CHANGE_EVENT);
-    break;
+      //   GridsterStore.emit(CHANGE_EVENT);
+      //   break;
 
-    case GridsterConstants.GENERATE_END:
+      // case GridsterConstants.GENERATE_END:
 
-      let endRow = parseInt(Math.random()*_store.rows, 10);
-      let endCell = endRow * _store.columns + (_store.columns -1);
-      _store.end = {'id': endCell, 'x': xcoord(endCell), 'y': ycoord(endCell)};
+      //   let endRow = parseInt(Math.random() * _store.rows, 10);
+      //   let endCell = endRow * _store.columns + (_store.columns - 1);
+      //   _store.end = { 'id': endCell, 'x': xcoord(endCell), 'y': ycoord(endCell) };
 
-      let endIndex = _store.grid.findIndex((obj => obj.id === parseInt(endCell, 10)));
-      _store.grid[endIndex].clicked = "end";
-      _store.grid[endIndex].counter = 0;
+      //   let endIndex = _store.grid.findIndex((obj => obj.id === parseInt(endCell, 10)));
+      //   _store.grid[endIndex].clicked = "end";
+      //   _store.grid[endIndex].counter = 0;
 
-      GridsterStore.emit(CHANGE_EVENT);
-    break;
+      //   GridsterStore.emit(CHANGE_EVENT);
+      //   break;
 
-    default:
+      // default:
 
       return true;
   }
@@ -645,4 +617,3 @@ AppDispatcher.register((payload) => {
 });
 
 export default GridsterStore;
-

@@ -80,6 +80,18 @@ export function moveRight() {
   });
 }
 
+export function moveLeft() {
+  AppDispatcher.handleViewAction({
+    actionType: GridsterConstants.MOVE_LEFT
+  });
+}
+
+export function moveClockwise() {
+  AppDispatcher.handleViewAction({
+    actionType: GridsterConstants.MOVE_CLOCKWISE
+  });
+}
+
 export function keyDown(key) {
   AppDispatcher.handleViewAction({
     actionType: GridsterConstants.KEY_DOWN,

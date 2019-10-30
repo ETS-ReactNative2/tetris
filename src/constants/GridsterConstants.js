@@ -1,5 +1,5 @@
 // Gridster constants
-export const GridsterConstants =  {
+export const GridsterConstants = {
   UPDATE_ITEM: 'UPDATE_ITEM',
   UPDATE_ROW: 'UPDATE_ROW',
   UPDATE_COL: 'UPDATE_COL',
@@ -12,7 +12,8 @@ export const GridsterConstants =  {
   GENERATE_START: 'GENERATE_START',
   GENERATE_END: 'GENERATE_END',
   UPDATE_GRAVITY: 'UPDATE_GRAVITY',
+  MOVE_LEFT: 'MOVE_LEFT',
+  MOVE_CLOCKWISE: 'MOVE_CLOCKWISE',
   MOVE_RIGHT: 'MOVE_RIGHT',
   KEY_DOWN: 'KEY_DOWN'
 };
-
