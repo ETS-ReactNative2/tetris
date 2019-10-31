@@ -15,7 +15,7 @@ export default class Grid extends Component {
 
   render() {
     // console.log('GRID here');
-    console.log('this.props', this.props);
+    // console.log('this.props', this.props);
 
    let rows = [];
     if ((this.props.rows * this.props.columns) > 0) {
@@ -23,7 +23,7 @@ export default class Grid extends Component {
         // console.log('this.props.grid', this.props.grid);
 
       this.props.grid.map((item, index) => {
-        console.log('this.props.grid[item]', this.props.grid[index]);
+        // console.log('this.props.grid[item]', this.props.grid[index]);
         return rows.push(
   			<GridItem key={index} id={index} text={this.props.grid[index]}/>
   			);

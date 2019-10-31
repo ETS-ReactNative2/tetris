@@ -4,6 +4,7 @@
 import AppDispatcher from '../dispatcher/AppDispatcher';
 import { GridsterConstants } from '../constants/GridsterConstants.js';
 import { EventEmitter } from 'events';
+import { parse } from 'querystring';
 
 EventEmitter.prototype._maxListeners = 200;
 
@@ -30,6 +31,31 @@ let _store = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
+  ],
+  shapes: [{
+      name: 'i',
+      shape: [1, 1, 1, 1],
+      width: 4,
+      height: 1,
+    },
+    {
+      name: 'l',
+      shape: [1, 1, 1, 0, 0, 1],
+      width: 3,
+      height: 2,
+    },
+    {
+      name: 't',
+      shape: [1, 1, 1, 0, 1, 0],
+      width: 3,
+      height: 2,
+    },
+    {
+      name: 'square',
+      shape: [1, 1, 1, 1],
+      width: 2,
+      height: 2,
+    }
   ]
 };
 
@@ -341,62 +367,6 @@ function shortestPath(counted, end, start) {
 
 }
 
-function pathFinder(unvisited, end, start) {
-
-  if (isPath(unvisited, end, start)) {
-
-    let countedCells = _store.grid.filter((obj => (obj.counter !== Infinity && obj.clicked !== "end")));
-
-    if (shortestPath(countedCells, end, start)) {
-      console.log('Found shortest path!!')
-    }
-
-  }
-
-}
-
-/*
-  accepts array of objects
-  if one of @unvisited cells is next to @end
-  if match calls pathFinder function passing, @unvisited cells, @start and @end
-*/
-function isEndVisited(unvisited, end, start) {
-  //clear path to start
-  clearPath();
-  //need some way of checking if path exits before as we have no way of knowing
-  if (end.length > 1) {
-    console.log('multiple ends!!');
-  }
-
-  if (unvisited.length !== 0 && end.length !== 0) {
-
-    end.forEach(function(enditem, j) {
-
-      unvisited.forEach(function(element, i) {
-        // top
-        if (checkTop(element.x, element.y, enditem.x, enditem.y)) {
-          pathFinder(unvisited, end, start);
-        }
-        // right
-        if (checkRight(element.x, element.y, enditem.x, enditem.y)) {
-          pathFinder(unvisited, end, start);
-        }
-        // bottom
-        if (checkBottom(element.x, element.y, enditem.x, enditem.y)) {
-          pathFinder(unvisited, end, start);
-        }
-        // left
-        if (checkLeft(element.x, element.y, enditem.x, enditem.y)) {
-          pathFinder(unvisited, end, start);
-        }
-
-      })
-
-    })
-
-  }
-}
-
 function xcoord(number) {
   return (1 + ((number % _store.columns)));
 }
@@ -421,15 +391,24 @@ function moveRight() {
   let $last_col_item;
 
   for (let rows = _store.rows; rows > 0; rows--) {
-    $last_col_item = (rows * _store.columns) - 1;
-    _store.grid = removeItem(_store.grid, $last_col_item);
+    $last_col_item = (rows * _store.columns);
+    // console.log($last_col_item);
+
     $first_col_item = $last_col_item - (_store.columns - 1);
-    _store.grid = addItem(_store.grid, $first_col_item);
+    // console.log($first_col_item);
+
+    _store.grid = removeItem(_store.grid, $last_col_item);
+    _store.grid = addItem(_store.grid, $first_col_item, 0);
   }
 }
 
-function addItem(items, i) {
-  let $new = items.splice(i, 0, 0);
+function addItem(items, i, item) {
+  let $new = items.splice(i, 0, item);
+  return items;
+}
+
+function paintItem(items, i, item) {
+  let $new = items.splice(i, 1, item);
   return items;
 }
 
@@ -437,6 +416,55 @@ const removeItem = (items, i) =>
   items.slice(0, i - 1).concat(items.slice(i, items.length));
 
 function moveClockwise() {
+  // use for testing shapes
+  // lets get a shape
+  // let shape = _store.shapes[0].shape;
+  // let shapeWidth = _store.shapes[0].width;
+  // let shapeHeigth = _store.shapes[0].height;
+  // console.log(shape);
+  // console.log(shapeWidth);
+  // console.log(shapeHeigth);
+  // // add shape to canvas
+  // // start with top centre
+  // //calc center top
+  // let startx = parseInt(_store.columns / 2);
+  // startx = startx - parseInt(shapeWidth / 2);
+  // console.log(startx);
+  // take stage and add our
+
+  paintShape();
+}
+
+function paintShape() {
+  // use for testing shapes
+  // lets get a shape
+  let shape = _store.shapes[0].shape;
+  let shapeWidth = _store.shapes[0].width;
+  let shapeHeigth = _store.shapes[0].height;
+  console.log(shape);
+  console.log(shapeWidth);
+  console.log(shapeHeigth);
+  // add shape to canvas
+  // start with top centre
+  //calc center top
+  let startx = parseInt(_store.columns / 2);
+  startx = startx - parseInt(shapeWidth / 2);
+  console.log(startx);
+
+  let shapeLength = shape.length;
+  console.log(shapeLength);
+  shape.forEach(myFunction)
+
+  function myFunction(item, index, arr) {
+    paintItem(_store.grid, index + startx, item)
+  }
+  // for (let height = shapeHeigth; height > 0; height--) {
+  //   for (let width = shapeWidth; width > 0; width--) {
+  //     console.log()
+  //   }
+  // }
+
+
 
 }
 
@@ -445,31 +473,24 @@ function moveClockwise() {
  * Updates the state in the store
  */
 function moveLeft() {
-  console.log(_store.grid);
+  // console.log(_store.grid);
 
   let $first_col_item;
   let $last_col_item;
 
   for (let rows = _store.rows; rows > 0; rows--) {
     $last_col_item = (rows * _store.columns);
-    console.log($last_col_item);
+    // console.log($last_col_item);
 
-    $first_col_item = $last_col_item - (_store.columns - 1);
-    _store.grid = removeItem(_store.grid, $first_col_item);
+    $first_col_item = $last_col_item - _store.columns + 1;
+    // console.log($first_col_item);
+    _store.grid = addItem(_store.grid, $last_col_item, 0);
 
-    _store.grid = addItem(_store.grid, $last_col_item);
+    _store.grid = removeItem(_store.grid, ($first_col_item));
   }
-  console.log(_store.grid);
-
 }
+// console.log(_store.grid);
 
-function removeLeft() {
-  // console.log('this is where we add cells to top or Right of the array', _store.columns);
-  // use unshift
-  // _store.grid.unshift(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-  console.log('_store.columns', _store.columns);
-  console.log('_store.rows', _store.rows);
-}
 
 function removeBottom() {
   // console.log('number', _store.columns * _store.rows);
@@ -567,7 +588,7 @@ AppDispatcher.register((payload) => {
 
       let start = _store.grid.filter((obj => (obj.clicked === "start")));
 
-      isEndVisited(unVisited, end, start);
+      // isEndVisited(unVisited, end, start);
 
       GridsterStore.emit(CHANGE_EVENT);
 
@@ -601,34 +622,6 @@ AppDispatcher.register((payload) => {
 
       GridsterStore.emit(CHANGE_EVENT);
       break;
-
-      // case GridsterConstants.GENERATE_START:
-
-      //   let startRow = parseInt(Math.random() * _store.rows, 10);
-      //   let startCell = startRow * _store.columns;
-      //   _store.start = { 'id': startCell, 'x': xcoord(startCell), 'y': ycoord(startCell) };
-
-      //   let startIndex = _store.grid.findIndex((obj => obj.id === parseInt(startCell, 10)));
-
-      //   _store.grid[startIndex].clicked = "start";
-
-      //   GridsterStore.emit(CHANGE_EVENT);
-      //   break;
-
-      // case GridsterConstants.GENERATE_END:
-
-      //   let endRow = parseInt(Math.random() * _store.rows, 10);
-      //   let endCell = endRow * _store.columns + (_store.columns - 1);
-      //   _store.end = { 'id': endCell, 'x': xcoord(endCell), 'y': ycoord(endCell) };
-
-      //   let endIndex = _store.grid.findIndex((obj => obj.id === parseInt(endCell, 10)));
-      //   _store.grid[endIndex].clicked = "end";
-      //   _store.grid[endIndex].counter = 0;
-
-      //   GridsterStore.emit(CHANGE_EVENT);
-      //   break;
-
-      // default:
 
       return true;
   }
