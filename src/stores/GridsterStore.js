@@ -431,16 +431,17 @@ function moveClockwise() {
   // startx = startx - parseInt(shapeWidth / 2);
   // console.log(startx);
   // take stage and add our
-
-  paintShape();
+  console.log(_store.shapes.length);
+  let randShape = Math.floor((Math.random() * _store.shapes.length))
+  paintShape(randShape);
 }
 
-function paintShape() {
+function paintShape(i) {
   // use for testing shapes
   // lets get a shape
-  let shape = _store.shapes[0].shape;
-  let shapeWidth = _store.shapes[0].width;
-  let shapeHeigth = _store.shapes[0].height;
+  let shape = _store.shapes[i].shape;
+  let shapeWidth = _store.shapes[i].width;
+  let shapeHeigth = _store.shapes[i].height;
   console.log(shape);
   console.log(shapeWidth);
   console.log(shapeHeigth);
@@ -456,7 +457,12 @@ function paintShape() {
   shape.forEach(myFunction)
 
   function myFunction(item, index, arr) {
-    paintItem(_store.grid, index + startx, item)
+    console.log(index, shapeWidth);
+    if (index < shapeWidth) {
+      paintItem(_store.grid, index + startx, item)
+    } else {
+      paintItem(_store.grid, _store.columns - shapeWidth + index + startx, item)
+    }
   }
   // for (let height = shapeHeigth; height > 0; height--) {
   //   for (let width = shapeWidth; width > 0; width--) {
