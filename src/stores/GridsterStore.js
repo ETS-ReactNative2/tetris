@@ -15,8 +15,6 @@ let _store = {
   columns: 10,
   rows: 16,
   grid: [
-    0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
-    0, 0, 0, 1, 1, 1, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -30,7 +28,9 @@ let _store = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   ],
   shapes: [{
       name: 'i',
@@ -41,6 +41,12 @@ let _store = {
     {
       name: 'l',
       shape: [1, 1, 1, 0, 0, 1],
+      width: 3,
+      height: 2,
+    },
+    {
+      name: 'r',
+      shape: [1, 1, 1, 1, 0, 0],
       width: 3,
       height: 2,
     },
@@ -56,7 +62,8 @@ let _store = {
       width: 2,
       height: 2,
     }
-  ]
+  ],
+  currentItem: []
 };
 
 // Define the public event listeners and getters that
@@ -235,138 +242,6 @@ function isPath(unvisited, end, start) {
 
 }
 
-function shortestPath(counted, end, start) {
-
-  let counter = 0;
-
-  counted.forEach(function(count) {
-    if (count.counter > counter) {
-      counter = count.counter;
-    }
-  })
-
-  //  if count = 8 from end make start.counter = 9
-  start[0].counter = counter + 1;
-
-  //Now, start at S (7) and go to the nearby cell with the lowest number (unchecked cells cannot be moved to). The path traced is (1,3,7) -> (1,4,6) -> (1,5,5) -> (1,6,4) -> (1,7,3) -> (1,8,2) -> (2,8,1) -> (3,8,0). In the event that two numbers are equally low (for example, if S was at (2,5)), pick a random direction – the lengths are the same. The algorithm is now complete.
-
-  let shortestPath = [];
-
-  while (counter > 0) {
-
-    if (shortestPath.length === 0 && start.length !== 0 && counted.length !== 0) {
-
-      start.forEach(function(startCell) {
-
-        counted.forEach(function(item, i) {
-          // top
-          if (checkTop(item.x, item.y, startCell.x, startCell.y)) {
-            if (item.counter === counter) {
-              shortestPath.push(item);
-            }
-          }
-          //right
-          if (checkRight(item.x, item.y, startCell.x, startCell.y)) {
-            if (item.counter === counter) {
-              shortestPath.push(item);
-            }
-          }
-          //bottom
-          if (checkBottom(item.x, item.y, startCell.x, startCell.y)) {
-            if (item.counter === counter) {
-              shortestPath.push(item);
-            }
-          }
-          //left
-          if (checkLeft(item.x, item.y, startCell.x, startCell.y)) {
-            if (item.counter === counter) {
-              shortestPath.push(item);
-            }
-          }
-
-        })
-      })
-    }
-
-    let lowestNumber = Infinity;
-    // get neighboure - for each neighbour take the lowest count ...
-    if (shortestPath.length !== 0) {
-      shortestPath.forEach(function(cell, c) {
-        if (cell.counter < lowestNumber) {
-          lowestNumber = cell.counter;
-        }
-      })
-    }
-
-    // container for lowest items
-    let nextLowest = [];
-    if (shortestPath.length !== 0) {
-      //take item with least count ....
-      shortestPath.forEach(function(cell, c) {
-        if (cell.counter === lowestNumber) {
-          nextLowest.push(cell);
-        }
-      })
-    }
-
-    if (nextLowest.length > 1) {
-      console.log('nextLowest more than one ', nextLowest);
-    }
-    if (nextLowest.length !== 0 && counted.length !== 0) {
-
-      counted.forEach(function(item) {
-
-        nextLowest.forEach(function(nextItem) {
-          // top
-          if (checkTop(item.x, item.y, nextItem.x, nextItem.y)) {
-            if (item.counter === counter) {
-              shortestPath.push(item);
-            }
-          }
-          //right
-          if (checkRight(item.x, item.y, nextItem.x, nextItem.y)) {
-            if (item.counter === counter) {
-              shortestPath.push(item);
-            }
-          }
-          //bottom
-          if (checkBottom(item.x, item.y, nextItem.x, nextItem.y)) {
-            if (item.counter === counter) {
-              shortestPath.push(item);
-            }
-          }
-          //left
-          if (checkLeft(item.x, item.y, nextItem.x, nextItem.y)) {
-            if (item.counter === counter) {
-              shortestPath.push(item);
-            }
-          }
-
-        })
-      })
-
-    }
-
-    counter = counter - 1;
-
-  }
-
-  if (counter === 0 && shortestPath.length !== 0) {
-    shortestPath.forEach(function(cell) {
-      if (cell.counter === 1) {
-        // console.log("Paint Shortest Path");
-        // clearPath();
-        connectPath(shortestPath);
-      }
-    })
-  }
-
-  if (counter === 0) {
-    return true;
-  }
-
-}
-
 function xcoord(number) {
   return (1 + ((number % _store.columns)));
 }
@@ -409,8 +284,16 @@ function addItem(items, i, item) {
 
 function paintItem(items, i, item) {
   let $new = items.splice(i, 1, item);
+  // console.log($new);
   return items;
 }
+
+function unPaintItem(items, i, item) {
+  let $new = items.splice(i, 1, item);
+  // console.log($new);
+  return items;
+}
+
 
 const removeItem = (items, i) =>
   items.slice(0, i - 1).concat(items.slice(i, items.length));
@@ -431,7 +314,7 @@ function moveClockwise() {
   // startx = startx - parseInt(shapeWidth / 2);
   // console.log(startx);
   // take stage and add our
-  console.log(_store.shapes.length);
+  // console.log(_store.shapes.length);
   let randShape = Math.floor((Math.random() * _store.shapes.length))
   paintShape(randShape);
 }
@@ -441,36 +324,70 @@ function paintShape(i) {
   // lets get a shape
   let shape = _store.shapes[i].shape;
   let shapeWidth = _store.shapes[i].width;
-  let shapeHeigth = _store.shapes[i].height;
-  console.log(shape);
-  console.log(shapeWidth);
-  console.log(shapeHeigth);
-  // add shape to canvas
-  // start with top centre
-  //calc center top
+
   let startx = parseInt(_store.columns / 2);
   startx = startx - parseInt(shapeWidth / 2);
-  console.log(startx);
 
-  let shapeLength = shape.length;
-  console.log(shapeLength);
-  shape.forEach(myFunction)
+  shape.forEach(paintShapeItem)
 
-  function myFunction(item, index, arr) {
-    console.log(index, shapeWidth);
-    if (index < shapeWidth) {
-      paintItem(_store.grid, index + startx, item)
+  function paintShapeItem(item, index, arr) {
+    // console.log(index, shapeWidth);
+    if (index < _store.shapes[i].width) {
+      let currentItemIndex = index + startx;
+      _store.currentItem.push(currentItemIndex);
+      // console.log(_store.currentItem);
+      paintItem(_store.grid, currentItemIndex, item)
     } else {
-      paintItem(_store.grid, _store.columns - shapeWidth + index + startx, item)
+      // console.log(_store.columns - _store.shapes[i].width + index + startx);
+      paintItem(_store.grid, _store.columns - _store.shapes[i].width + index + startx, item)
     }
   }
-  // for (let height = shapeHeigth; height > 0; height--) {
-  //   for (let width = shapeWidth; width > 0; width--) {
-  //     console.log()
-  //   }
-  // }
+
+}
+
+function updatePaintShape(currentItem) {
+  // use for testing shapes
+  // lets get a shape
 
 
+  currentItem.forEach(paintShapeItem)
+
+  function paintShapeItem(item, index, arr) {
+    // console.log(index, shapeWidth);
+    paintItem(_store.grid, item, 1);
+    // if (index < _store.shapes[i].width) {
+    //   // let currentItemIndex = index + startx;
+    //   // _store.currentItem.push(currentItemIndex);
+    //   // console.log(_store.currentItem);
+    //   paintItem(_store.grid, currentItemIndex, item)
+    // } else {
+    //   // console.log(_store.columns - _store.shapes[i].width + index + startx);
+    //   paintItem(_store.grid, _store.columns - _store.shapes[i].width + index + startx, item)
+    // }
+  }
+
+}
+
+function unPaintShape(currentItem) {
+  // use for testing shapes
+  // lets get a shape
+
+
+  currentItem.forEach(unPaintShapeItem)
+
+  function unPaintShapeItem(item, index, arr) {
+    // console.log(index, shapeWidth);
+    unPaintItem(_store.grid, item, 0);
+    // if (index < _store.shapes[i].width) {
+    //   // let currentItemIndex = index + startx;
+    //   // _store.currentItem.push(currentItemIndex);
+    //   // console.log(_store.currentItem);
+    //   paintItem(_store.grid, currentItemIndex, item)
+    // } else {
+    //   // console.log(_store.columns - _store.shapes[i].width + index + startx);
+    //   paintItem(_store.grid, _store.columns - _store.shapes[i].width + index + startx, item)
+    // }
+  }
 
 }
 
@@ -502,6 +419,17 @@ function removeBottom() {
   // console.log('number', _store.columns * _store.rows);
   // console.log('this is where we remove cells from bottom or end', (_store.columns * _store.rows) - _store.columns -1);
   _store.grid.splice((_store.columns * _store.rows) - _store.columns - 1, _store.columns);
+}
+
+function gravity() {
+  //move current item down one
+  // console.log(_store.currentItem);
+
+  let tempCurrent = _store.currentItem.map(x => x + 10)
+  _store.currentItem = tempCurrent.slice(0);
+  // console.log(tempCurrent);
+  // console.log(_store.currentItem);
+
 }
 
 // Initialize the singleton to register with the
@@ -538,8 +466,12 @@ AppDispatcher.register((payload) => {
 
     case GridsterConstants.UPDATE_GRAVITY:
       // call function to update store here = add 10 cells to beginning - remove 10 cells at the end
-      removeBottom();
-      addTop();
+      // removeBottom();
+      unPaintShape(_store.currentItem);
+      gravity();
+      // paintShape()
+      updatePaintShape(_store.currentItem)
+        // addTop();
       GridsterStore.emit(CHANGE_EVENT);
       break;
 
