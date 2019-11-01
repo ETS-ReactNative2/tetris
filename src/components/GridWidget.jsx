@@ -4,7 +4,7 @@ import GridsterStore from '../stores/GridsterStore.js';
 import Button from './Button';
 import Input from './Input';
 import Grid from './Grid';
-import { updateRow, updateColumn, generateGrid, generateStart, generateEnd, updateGravity, moveClockwise, moveRight, moveLeft, keyDown} from '../actions/GridsterActions.js';
+import { updateRow, updateColumn, generateGrid, generateStart, generateEnd, updateGravity, moveClockwise, startGame, moveRight, moveLeft, keyDown} from '../actions/GridsterActions.js';
 
 const spanStyle = {
   marginRight: '1rem',
@@ -40,7 +40,10 @@ export default class GridWidget extends Component {
     this.state = {
       columns: 10,
       rows: 16,
-      grid: []
+      grid: [],
+      timerOn: false,
+      timerStart: 0,
+      timerTime: 0
     };
   }
 
@@ -99,10 +102,18 @@ export default class GridWidget extends Component {
     moveClockwise();
   }
 
+  _startGame() {
+    // startTimer();
+    // console.log(this.state);
+    startGame();
+  }
+
   _onKeyDown(e) {
     console.log("key pressed", e);
     keyDown();
   }
+
+
 
   render() {
     return (
@@ -113,6 +124,7 @@ export default class GridWidget extends Component {
             <Button text="right" onclick={this._onRight} />
             <Button text="left" onclick={this._onLeft} />
             <Button text="rotate" onclick={this._onRotate} />
+            <Button text="start" onclick={this._startGame} />
           </form>
         </div>
         <div className="inner-container" >

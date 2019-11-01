@@ -15,5 +15,6 @@ export const GridsterConstants = {
   MOVE_LEFT: 'MOVE_LEFT',
   MOVE_CLOCKWISE: 'MOVE_CLOCKWISE',
   MOVE_RIGHT: 'MOVE_RIGHT',
-  KEY_DOWN: 'KEY_DOWN'
+  KEY_DOWN: 'KEY_DOWN',
+  START_GAME: 'START_GAME',
 };

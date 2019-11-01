@@ -63,7 +63,8 @@ let _store = {
       height: 2,
     }
   ],
-  currentItem: []
+  currentItem: [],
+  timer: 0,
 };
 
 // Define the public event listeners and getters that
@@ -284,13 +285,15 @@ function addItem(items, i, item) {
 
 function paintItem(items, i, item) {
   let $new = items.splice(i, 1, item);
-  // console.log($new);
+  console.log($new);
+  console.log(items);
+
   return items;
 }
 
 function unPaintItem(items, i, item) {
   let $new = items.splice(i, 1, item);
-  // console.log($new);
+  console.log(items);
   return items;
 }
 
@@ -328,27 +331,31 @@ function paintShape(i) {
   let startx = parseInt(_store.columns / 2);
   startx = startx - parseInt(shapeWidth / 2);
 
-  shape.forEach(paintShapeItem)
+  shape.forEach(paintShapeItem);
 
   function paintShapeItem(item, index, arr) {
     // console.log(index, shapeWidth);
+    let limit = _store.columns * _store.rows;
     if (index < _store.shapes[i].width) {
       let currentItemIndex = index + startx;
-      if (item > 0) {
-        _store.currentItem.push(currentItemIndex);
-
+      if (item === 1) {
+        if (item < limit) {
+          _store.currentItem.push(currentItemIndex);
+          paintItem(_store.grid, currentItemIndex, item)
+        }
       }
       // console.log(_store.currentItem);
-      paintItem(_store.grid, currentItemIndex, item)
     } else {
       // console.log(_store.columns - _store.shapes[i].width + index + startx);
       let currentItemIndexSecondLine = _store.columns - _store.shapes[i].width + index + startx;
-      console.log(item);
-      if (item > 0) {
-        _store.currentItem.push(currentItemIndexSecondLine);
-
+      // console.log(item);
+      if (item === 1) {
+        if (item < limit) {
+          _store.currentItem.push(currentItemIndexSecondLine);
+          paintItem(_store.grid, currentItemIndexSecondLine, item)
+        }
       }
-      paintItem(_store.grid, currentItemIndexSecondLine, item)
+
     }
   }
 
@@ -358,13 +365,15 @@ function updatePaintShape(currentItem) {
   // use for testing shapes
   // lets get a shape
 
-
+  console.log(currentItem);
   currentItem.forEach(paintShapeItem)
 
   function paintShapeItem(item, index, arr) {
-    // console.log(index, shapeWidth);
-    paintItem(_store.grid, item, 1);
-
+    let limit = _store.columns * _store.rows;
+    if (item < limit) {
+      console.log(item);
+      paintItem(_store.grid, item, 1);
+    }
   }
 
 }
@@ -372,15 +381,17 @@ function updatePaintShape(currentItem) {
 function unPaintShape(currentItem) {
   // use for testing shapes
   // lets get a shape
-
+  console.log(currentItem);
 
   currentItem.forEach(unPaintShapeItem)
 
   function unPaintShapeItem(item, index, arr) {
     // console.log(index, shapeWidth);
     unPaintItem(_store.grid, item, 0);
-
   }
+
+  console.log(_store.grid);
+
 
 }
 
@@ -416,21 +427,58 @@ function removeBottom() {
 
 function gravity() {
   //move current item down one
-  // console.log(_store.currentItem);
-  // let tempCurrent = _store.currentItem.reverse();
-  console.log(_store.currentItem);
 
-  let tempCurrent = _store.currentItem.map(x => x + 10);
-  console.log(tempCurrent);
+  // console.log(_store.currentItem)
+  if (_store.currentItem.length !== 0) {
+    console.log(_store.currentItem.length);
+    let tempCurrent = _store.currentItem.map(addGravity);
+    // console.log(tempCurrent)
+    // clean up
+    tempCurrent = tempCurrent.filter(function(element) {
+      return element !== undefined;
+    });
 
-  // let newTempCurrent = tempCurrent.reverse();
-  // console.log(newTempCurrent);
+    // check no value above 160
+    _store.currentItem = tempCurrent.slice(0);
+    // console.log(_store.currentItem)
+  }
 
-  // replace
-  _store.currentItem = tempCurrent.slice(0);
-  // console.log(tempCurrent);
-  console.log(_store.currentItem);
+}
 
+function addGravity(x, index, arr) {
+  let limit = _store.columns * _store.rows;
+  if (x + 10 < limit) {
+    return x = x + 10;
+  } else {
+    return;
+  }
+}
+
+function startGame() {
+  // get current time in store and increase by one every second
+  // let currentTime = _store.timer;
+  startTimer();
+
+  // drup current block by one
+
+}
+
+function startTimer() {
+  setInterval(() => {
+    if (_store.timer < 17) {
+      _store.timer = _store.timer + 1;
+      console.log(_store.timer);
+      //call gravity after every second
+      // console.log(_store.currentItem);
+      unPaintShape(_store.currentItem);
+      gravity();
+      updatePaintShape(_store.currentItem);
+      GridsterStore.emit(CHANGE_EVENT);
+    } else {
+      return;
+    }
+    // console.log(temp);
+  }, 1000);
 }
 
 // Initialize the singleton to register with the
@@ -494,6 +542,12 @@ AppDispatcher.register((payload) => {
       GridsterStore.emit(CHANGE_EVENT);
       break;
 
+    case GridsterConstants.START_GAME:
+      // call function to update store here = add 10 cells to beginning - remove 10 cells at the end
+      startGame();
+      GridsterStore.emit(CHANGE_EVENT);
+      break;
+
     case GridsterConstants.GENERATE_GRID:
 
       let total = _store.columns * _store.rows;
@@ -521,11 +575,11 @@ AppDispatcher.register((payload) => {
       }
 
       // on click check for connection
-      let unVisited = _store.grid.filter((obj => (obj.clicked === "true")));
+      // let unVisited = _store.grid.filter((obj => (obj.clicked === "true")));
 
-      let end = _store.grid.filter((obj => (obj.clicked === "end")));
+      // let end = _store.grid.filter((obj => (obj.clicked === "end")));
 
-      let start = _store.grid.filter((obj => (obj.clicked === "start")));
+      // let start = _store.grid.filter((obj => (obj.clicked === "start")));
 
       // isEndVisited(unVisited, end, start);
 
