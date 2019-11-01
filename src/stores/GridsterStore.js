@@ -334,12 +334,21 @@ function paintShape(i) {
     // console.log(index, shapeWidth);
     if (index < _store.shapes[i].width) {
       let currentItemIndex = index + startx;
-      _store.currentItem.push(currentItemIndex);
+      if (item > 0) {
+        _store.currentItem.push(currentItemIndex);
+
+      }
       // console.log(_store.currentItem);
       paintItem(_store.grid, currentItemIndex, item)
     } else {
       // console.log(_store.columns - _store.shapes[i].width + index + startx);
-      paintItem(_store.grid, _store.columns - _store.shapes[i].width + index + startx, item)
+      let currentItemIndexSecondLine = _store.columns - _store.shapes[i].width + index + startx;
+      console.log(item);
+      if (item > 0) {
+        _store.currentItem.push(currentItemIndexSecondLine);
+
+      }
+      paintItem(_store.grid, currentItemIndexSecondLine, item)
     }
   }
 
@@ -355,15 +364,7 @@ function updatePaintShape(currentItem) {
   function paintShapeItem(item, index, arr) {
     // console.log(index, shapeWidth);
     paintItem(_store.grid, item, 1);
-    // if (index < _store.shapes[i].width) {
-    //   // let currentItemIndex = index + startx;
-    //   // _store.currentItem.push(currentItemIndex);
-    //   // console.log(_store.currentItem);
-    //   paintItem(_store.grid, currentItemIndex, item)
-    // } else {
-    //   // console.log(_store.columns - _store.shapes[i].width + index + startx);
-    //   paintItem(_store.grid, _store.columns - _store.shapes[i].width + index + startx, item)
-    // }
+
   }
 
 }
@@ -378,15 +379,7 @@ function unPaintShape(currentItem) {
   function unPaintShapeItem(item, index, arr) {
     // console.log(index, shapeWidth);
     unPaintItem(_store.grid, item, 0);
-    // if (index < _store.shapes[i].width) {
-    //   // let currentItemIndex = index + startx;
-    //   // _store.currentItem.push(currentItemIndex);
-    //   // console.log(_store.currentItem);
-    //   paintItem(_store.grid, currentItemIndex, item)
-    // } else {
-    //   // console.log(_store.columns - _store.shapes[i].width + index + startx);
-    //   paintItem(_store.grid, _store.columns - _store.shapes[i].width + index + startx, item)
-    // }
+
   }
 
 }
@@ -424,11 +417,19 @@ function removeBottom() {
 function gravity() {
   //move current item down one
   // console.log(_store.currentItem);
+  // let tempCurrent = _store.currentItem.reverse();
+  console.log(_store.currentItem);
 
-  let tempCurrent = _store.currentItem.map(x => x + 10)
+  let tempCurrent = _store.currentItem.map(x => x + 10);
+  console.log(tempCurrent);
+
+  // let newTempCurrent = tempCurrent.reverse();
+  // console.log(newTempCurrent);
+
+  // replace
   _store.currentItem = tempCurrent.slice(0);
   // console.log(tempCurrent);
-  // console.log(_store.currentItem);
+  console.log(_store.currentItem);
 
 }
 
