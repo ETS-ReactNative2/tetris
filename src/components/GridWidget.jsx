@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import GridsterStore from '../stores/GridsterStore.js';
 import Button from './Button';
-import Input from './Input';
+// import Input from './Input';
 import Grid from './Grid';
 import { updateRow, updateColumn, generateGrid, generateStart, generateEnd, updateGravity, moveClockwise, startGame, moveRight, moveLeft, keyDown} from '../actions/GridsterActions.js';
 

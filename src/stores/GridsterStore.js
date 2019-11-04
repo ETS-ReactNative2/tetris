@@ -97,35 +97,35 @@ function clearPath() {
   })
 }
 //paint path
-function connectPath(array) {
-  array.forEach((element, i) => {
-    element.path = "connected";
-  })
-}
+// function connectPath(array) {
+//   array.forEach((element, i) => {
+//     element.path = "connected";
+//   })
+// }
 
-function checkTop(x, y, targetX, targetY) {
-  if (x === targetX && y + 1 === targetY) {
-    return true;
-  }
-}
+// function checkTop(x, y, targetX, targetY) {
+//   if (x === targetX && y + 1 === targetY) {
+//     return true;
+//   }
+// }
 
-function checkRight(x, y, targetX, targetY) {
-  if (x === targetX + 1 && y === targetY) {
-    return true;
-  }
-}
+// function checkRight(x, y, targetX, targetY) {
+//   if (x === targetX + 1 && y === targetY) {
+//     return true;
+//   }
+// }
 
-function checkBottom(x, y, targetX, targetY) {
-  if (x === targetX && y - 1 === targetY) {
-    return true;
-  }
-}
+// function checkBottom(x, y, targetX, targetY) {
+//   if (x === targetX && y - 1 === targetY) {
+//     return true;
+//   }
+// }
 
-function checkLeft(x, y, targetX, targetY) {
-  if (x === targetX - 1 && y === targetY) {
-    return true;
-  }
-}
+// function checkLeft(x, y, targetX, targetY) {
+//   if (x === targetX - 1 && y === targetY) {
+//     return true;
+//   }
+// }
 
 function xcoord(number) {
   return (1 + ((number % _store.columns)));
@@ -144,22 +144,22 @@ function addTop() {
  * This function moves everything on the canvas to the right
  * Updates the state in the store
  */
-function moveRight() {
+// function moveRight() {
 
-  let $first_col_item;
-  let $last_col_item;
+//   let $first_col_item;
+//   let $last_col_item;
 
-  for (let rows = _store.rows; rows > 0; rows--) {
-    $last_col_item = (rows * _store.columns);
-    // console.log($last_col_item);
+//   for (let rows = _store.rows; rows > 0; rows--) {
+//     $last_col_item = (rows * _store.columns);
+//     // console.log($last_col_item);
 
-    $first_col_item = $last_col_item - (_store.columns - 1);
-    // console.log($first_col_item);
+//     $first_col_item = $last_col_item - (_store.columns - 1);
+//     // console.log($first_col_item);
 
-    _store.grid = removeItem(_store.grid, $last_col_item);
-    _store.grid = addItem(_store.grid, $first_col_item, 0);
-  }
-}
+//     _store.grid = removeItem(_store.grid, $last_col_item);
+//     _store.grid = addItem(_store.grid, $first_col_item, 0);
+//   }
+// }
 
 function addItem(items, i, item) {
   let $new = items.splice(i, 0, item);
@@ -260,24 +260,54 @@ function unPaintShape(currentItem) {
  * Updates the state in the store
  */
 function moveLeft() {
-  // console.log(_store.grid);
-
-  let $first_col_item;
-  let $last_col_item;
-
-  for (let rows = _store.rows; rows > 0; rows--) {
-    $last_col_item = (rows * _store.columns);
-    // console.log($last_col_item);
-
-    $first_col_item = $last_col_item - _store.columns + 1;
-    // console.log($first_col_item);
-    _store.grid = addItem(_store.grid, $last_col_item, 0);
-
-    _store.grid = removeItem(_store.grid, ($first_col_item));
+  //similar to gravity
+  if (_store.currentItem.length !== 0) {
+    let initialCurrentLength = _store.currentItem.length;
+    let sortedCurrentItem = _store.currentItem.sort(function(a, b) { return b - a });
+    let tempCurrent = sortedCurrentItem.map(addLeft);
+    //remove items where value is undefined
+    tempCurrent = tempCurrent.filter(function(element) {
+      return element !== undefined;
+    });
+    let processedCurrentLength = tempCurrent.length;
+    /*
+    // check length of new array is the same as initially set
+    // if there is a difference it implies that the current
+    // block cannot move so we should stop leave as is and
+    // render a new random shape
+    */
+    if (initialCurrentLength === processedCurrentLength) {
+      moveCurrent(tempCurrent);
+    }
   }
 }
-// console.log(_store.grid);
 
+/**
+ * This function moves everything on the canvas to the left
+ * Updates the state in the store
+ */
+function moveRight() {
+  //similar to gravity
+  if (_store.currentItem.length !== 0) {
+    let initialCurrentLength = _store.currentItem.length;
+    let sortedCurrentItem = _store.currentItem.sort(function(a, b) { return b - a });
+    let tempCurrent = sortedCurrentItem.map(addRight);
+    //remove items where value is undefined
+    tempCurrent = tempCurrent.filter(function(element) {
+      return element !== undefined;
+    });
+    let processedCurrentLength = tempCurrent.length;
+    /*
+    // check length of new array is the same as initially set
+    // if there is a difference it implies that the current
+    // block cannot move so we should stop leave as is and
+    // render a new random shape
+    */
+    if (initialCurrentLength === processedCurrentLength) {
+      moveCurrent(tempCurrent);
+    }
+  }
+}
 
 function removeBottom() {
   // console.log('number', _store.columns * _store.rows);
@@ -289,50 +319,41 @@ function removeBottom() {
  * moves the _store.currentItem down one
  */
 function gravity() {
-
   if (_store.currentItem.length !== 0) {
     let initialCurrentLength = _store.currentItem.length;
-    console.log(_store.currentItem);
-    console.log(_store.currentItem.sort(function(a, b) { return b - a }));
-    let sortedCurrentItem = _store.currentItem.sort();
+    let sortedCurrentItem = _store.currentItem.sort(function(a, b) { return b - a });
     let tempCurrent = sortedCurrentItem.map(addGravity);
     //remove items where value is undefined
-    console.log(tempCurrent);
     tempCurrent = tempCurrent.filter(function(element) {
       return element !== undefined;
     });
     let processedCurrentLength = tempCurrent.length;
     /*
-    // check if length of new array is the same as set initially
+    // check length of new array is the same as initially set
     // if there is a difference it implies that the current
     // block cannot move so we should stop leave as is and
     // render a new random shape
     */
     if (initialCurrentLength === processedCurrentLength) {
-      unPaintShape(_store.currentItem);
-      _store.currentItem = tempCurrent.slice(0);
-      updatePaintShape(_store.currentItem);
+      moveCurrent(tempCurrent);
     } else {
-      // reset current item
-      _store.currentItem.length = 0;
-      //choose random shape
-      chooseRandom();
+      startAgain();
     }
   }
-
 }
 
-function checkCollision() {
-  //first check if floor
-  if (_store.currentItem.length !== 0) {
-    let tempCurrent = _store.currentItem.map(addGravity);
-    //remove items where value is undefined
-    tempCurrent = tempCurrent.filter(function(element) {
-      return element !== undefined;
-    });
-    //replace current item
-    _store.currentItem = tempCurrent.slice(0);
-  }
+function moveCurrent(tempCurrent) {
+  unPaintShape(_store.currentItem);
+  _store.currentItem = tempCurrent.slice(0);
+  updatePaintShape(_store.currentItem);
+}
+
+function startAgain() {
+  // reset current item
+
+  _store.currentItem.length = 0;
+  //choose random shape
+  chooseRandom();
 }
 
 /*
@@ -341,16 +362,8 @@ function checkCollision() {
  */
 function addGravity(item, index, arr) {
   let limit = _store.columns * _store.rows;
-  //need to check other blocks in grid first?
-  //cycle though each item to check if it is already populated with a 1
-  //checks that does not fall though floor
-  console.log(item);
-  // console.log(_store.grid.length);
-  // console.log(_store.columns);
-
-
-  //add check to see if exists in currentItem, then we don;t want to check for 1
   if (item < (_store.grid.length - _store.columns)) {
+    //add check to see if exists in currentItem, then we don't want to check for 1
     if (_store.currentItem.includes(item + _store.columns)) {
       if (item + _store.columns < limit) {
         return item = item + _store.columns;
@@ -367,25 +380,62 @@ function addGravity(item, index, arr) {
   } else {
     return;
   }
-  console.log(_store.grid[item + _store.columns]);
-
 }
 
 /*
- * accepts an array and adds the amount of columns to the array
- * used by map to add increase each item so that it mve sdown one on row
+ * item - should match the index in the stage
+ * used by map to add increase each item so that it moves down one row
  */
-function checkGravity(x, index, arr) {
-  let limit = _store.columns * _store.rows;
-  if (x + _store.columns < limit) {
-    if (x + _store.columns < limit) {
-      return x + _store.columns;
-    } else {
-      return x;
-    }
+function addLeft(item, index, arr) {
+  // yes so if current shape has an item that is (index) % number_columns == 0
+  // then we cannot move left
+  //e.g. 0 1 2 3 4 5 6 7 8 9
+  //     10 11 12 13 14 15 16 17 18 19 20
+  // e.g. 0000111000
+  //      0000010000
+  // 4, 5, 6, 15 become
+  // 3 , 4, 5, 14
+  // console.log(item);
+  // console.log(_store.currentItem.includes(item - 1));
+
+  if (_store.currentItem.includes(item - 1)) {
+    return item = item - 1;
   } else {
-    return;
+    //check if first column
+    if (item % _store.columns !== 0) {
+      // need to also check if element already exists in grid
+      if (_store.grid[item - 1] !== 1) {
+        return item = item - 1;
+      } else {
+        return;
+      }
+    } else {
+      return;
+    }
   }
+}
+
+/*
+ * item - should match the index in the stage
+ * used by map to add increase each item so that it moves across one column
+ */
+function addRight(item, index, arr) {
+  if (_store.currentItem.includes(item + 1)) {
+    return item = item + 1;
+  } else {
+    //check if first column
+    if (item + 1 % _store.columns !== 0) {
+      // need to also check if element already exists in grid
+      if (_store.grid[item + 1] !== 1) {
+        return item = item + 1;
+      } else {
+        return;
+      }
+    } else {
+      return;
+    }
+  }
+
 }
 
 /*
