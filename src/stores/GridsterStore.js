@@ -4,8 +4,8 @@
 import AppDispatcher from '../dispatcher/AppDispatcher';
 import { GridsterConstants } from '../constants/GridsterConstants.js';
 import { EventEmitter } from 'events';
-import { parse } from 'querystring';
-import { AST_Statement } from 'terser';
+// import { parse } from 'querystring';
+// import { AST_Statement } from 'terser';
 
 EventEmitter.prototype._maxListeners = 200;
 
@@ -105,52 +105,24 @@ function connectPath(array) {
 
 function checkTop(x, y, targetX, targetY) {
   if (x === targetX && y + 1 === targetY) {
-    // console.log('checkstart top');
     return true;
   }
 }
 
 function checkRight(x, y, targetX, targetY) {
   if (x === targetX + 1 && y === targetY) {
-    // console.log('checkstart right');
     return true;
   }
 }
 
 function checkBottom(x, y, targetX, targetY) {
   if (x === targetX && y - 1 === targetY) {
-    // console.log('checkstart bottom');
     return true;
   }
 }
 
 function checkLeft(x, y, targetX, targetY) {
   if (x === targetX - 1 && y === targetY) {
-    // console.log('checkstart left');
-    return true;
-  }
-}
-
-/*
-  Takes @cellX and @cellY value and returns
-  in addition to @startX and @startY
-  And returns true if either top, bottom, left or right
-*/
-function checkStart(cellX, cellY, startX, startY) {
-  // top
-  if (checkTop(cellX, cellY, startX, startY)) {
-    return true;
-  }
-  //right
-  if (checkRight(cellX, cellY, startX, startY)) {
-    return true;
-  }
-  //bottom
-  if (checkBottom(cellX, cellY, startX, startY)) {
-    return true;
-  }
-  // left
-  if (checkLeft(cellX, cellY, startX, startY)) {
     return true;
   }
 }
@@ -164,7 +136,6 @@ function ycoord(number) {
 }
 
 function addTop() {
-  // console.log('this is where we add cells to top or beginning of array', _store.columns);
   // use unshift
   _store.grid.unshift(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 }
@@ -202,12 +173,6 @@ function paintItem(items, i, item) {
   let $new = items.splice(i, 1, item);
   return items;
 }
-
-// function unPaintItem(items, i, item) {
-//   let $new = items.splice(i, 1, item);
-//   // console.log(items);
-//   return items;
-// }
 
 
 const removeItem = (items, i) =>
@@ -320,46 +285,115 @@ function removeBottom() {
   _store.grid.splice((_store.columns * _store.rows) - _store.columns - 1, _store.columns);
 }
 
+/*
+ * moves the _store.currentItem down one
+ */
 function gravity() {
-  //move current item down one
 
-  // console.log(_store.currentItem)
   if (_store.currentItem.length !== 0) {
-    // console.log(_store.currentItem.length);
-    let tempCurrent = _store.currentItem.map(addGravity);
-    // console.log(tempCurrent)
-    // clean up
+    let initialCurrentLength = _store.currentItem.length;
+    console.log(_store.currentItem);
+    console.log(_store.currentItem.sort(function(a, b) { return b - a }));
+    let sortedCurrentItem = _store.currentItem.sort();
+    let tempCurrent = sortedCurrentItem.map(addGravity);
+    //remove items where value is undefined
+    console.log(tempCurrent);
     tempCurrent = tempCurrent.filter(function(element) {
       return element !== undefined;
     });
-
-    // check no value above 160
-    _store.currentItem = tempCurrent.slice(0);
-    // console.log(_store.currentItem)
+    let processedCurrentLength = tempCurrent.length;
+    /*
+    // check if length of new array is the same as set initially
+    // if there is a difference it implies that the current
+    // block cannot move so we should stop leave as is and
+    // render a new random shape
+    */
+    if (initialCurrentLength === processedCurrentLength) {
+      unPaintShape(_store.currentItem);
+      _store.currentItem = tempCurrent.slice(0);
+      updatePaintShape(_store.currentItem);
+    } else {
+      // reset current item
+      _store.currentItem.length = 0;
+      //choose random shape
+      chooseRandom();
+    }
   }
 
 }
 
+function checkCollision() {
+  //first check if floor
+  if (_store.currentItem.length !== 0) {
+    let tempCurrent = _store.currentItem.map(addGravity);
+    //remove items where value is undefined
+    tempCurrent = tempCurrent.filter(function(element) {
+      return element !== undefined;
+    });
+    //replace current item
+    _store.currentItem = tempCurrent.slice(0);
+  }
+}
 
-function addGravity(x, index, arr) {
+/*
+ * item - should match the index in the stage
+ * used by map to add increase each item so that it moves down one row
+ */
+function addGravity(item, index, arr) {
   let limit = _store.columns * _store.rows;
-  if (x + 10 < limit) {
-    return x = x + 10;
+  //need to check other blocks in grid first?
+  //cycle though each item to check if it is already populated with a 1
+  //checks that does not fall though floor
+  console.log(item);
+  // console.log(_store.grid.length);
+  // console.log(_store.columns);
+
+
+  //add check to see if exists in currentItem, then we don;t want to check for 1
+  if (item < (_store.grid.length - _store.columns)) {
+    if (_store.currentItem.includes(item + _store.columns)) {
+      if (item + _store.columns < limit) {
+        return item = item + _store.columns;
+      }
+    } else {
+      if (_store.grid[item + _store.columns] !== 1) {
+        if (item + _store.columns < limit) {
+          return item = item + _store.columns;
+        }
+      } else {
+        return;
+      }
+    }
+  } else {
+    return;
+  }
+  console.log(_store.grid[item + _store.columns]);
+
+}
+
+/*
+ * accepts an array and adds the amount of columns to the array
+ * used by map to add increase each item so that it mve sdown one on row
+ */
+function checkGravity(x, index, arr) {
+  let limit = _store.columns * _store.rows;
+  if (x + _store.columns < limit) {
+    if (x + _store.columns < limit) {
+      return x + _store.columns;
+    } else {
+      return x;
+    }
   } else {
     return;
   }
 }
 
+/*
+ * starts game and sets state of game to 1
+ */
 function startGame() {
-  // get current time in store and increase by one every second
-  // let currentTime = _store.timer;
-  console.log(_store.state);
-
   startTimer();
   _store.state = 1;
-  console.log(_store.state);
-  // drup current block by one
-
 }
 
 function startTimer() {
@@ -370,9 +404,8 @@ function startTimer() {
       // console.log(_store.timer);
       //call gravity after every second
       // console.log(_store.currentItem);
-      unPaintShape(_store.currentItem);
+      // unPaintShape(_store.currentItem);
       gravity();
-      updatePaintShape(_store.currentItem);
       GridsterStore.emit(CHANGE_EVENT);
     } else {
       return;
@@ -414,14 +447,6 @@ AppDispatcher.register((payload) => {
       break;
 
     case GridsterConstants.UPDATE_GRAVITY:
-      // call function to update store here = add 10 cells to beginning - remove 10 cells at the end
-      // removeBottom();
-      // unPaintShape(_store.currentItem);
-      // gravity();
-      // paintShape()
-      // updatePaintShape(_store.currentItem)
-
-      // addTop();
       GridsterStore.emit(CHANGE_EVENT);
       break;
 
