@@ -5,6 +5,7 @@ import AppDispatcher from '../dispatcher/AppDispatcher';
 import { GridsterConstants } from '../constants/GridsterConstants.js';
 import { EventEmitter } from 'events';
 import { parse } from 'querystring';
+import { AST_Statement } from 'terser';
 
 EventEmitter.prototype._maxListeners = 200;
 
@@ -65,6 +66,7 @@ let _store = {
   ],
   currentItem: [],
   timer: 0,
+  state: 0,
 };
 
 // Define the public event listeners and getters that
@@ -153,96 +155,6 @@ function checkStart(cellX, cellY, startX, startY) {
   }
 }
 
-
-/*
-  iterates through @unvisited cells
-  starting at @end cell until it is next to @start cell
-  i.e. 0, 0+1, 0+1+1, 0+1+1+1
-  until count item is next to end
-  || if not available i.e cell end is not end, and none other available return
-  // needs to fail if next item is not one more htan previous!!!
-*/
-function isPath(unvisited, end, start) {
-
-  let counter = 0;
-  let countedCells = [];
-
-  let match = false;
-  let next = true;
-
-  while (match === false && next === true) {
-
-    let uncountedItems = unvisited.filter((obj => (obj.counter > counter)));
-
-    if (uncountedItems.length === 0) {
-      next = false;
-    }
-    //queue is array object where counter = counter
-    let matchedItems = _store.grid.filter((obj => (obj.counter === counter)));
-    // if (matchedItems.length > 1) {
-    //   console.log('matched items more than one');
-    //   console.log('matchedItems', matchedItems);
-    // }
-    if (matchedItems.length === 0) {
-      next = false;
-    }
-    if (matchedItems.length !== 0 && start.length !== 0 && uncountedItems.length !== 0) {
-
-      matchedItems.forEach(function(matchCell) {
-        //iterate through start array
-        //only one item
-        start.forEach(function(startCell) {
-
-          uncountedItems.forEach(function(element) {
-
-            if (checkTop(element.x, element.y, matchCell.x, matchCell.y)) {
-              element.counter = counter + 1;
-              countedCells.push(element);
-              if (checkStart(element.x, element.y, startCell.x, startCell.y)) {
-                match = true;
-              }
-            }
-
-            if (checkRight(element.x, element.y, matchCell.x, matchCell.y)) {
-              element.counter = counter + 1;
-              countedCells.push(element);
-              if (checkStart(element.x, element.y, startCell.x, startCell.y)) {
-                match = true;
-              }
-            }
-
-            if (checkBottom(element.x, element.y, matchCell.x, matchCell.y)) {
-              element.counter = counter + 1;
-              countedCells.push(element);
-              if (checkStart(element.x, element.y, startCell.x, startCell.y)) {
-                match = true;
-              }
-            }
-
-            if (checkLeft(element.x, element.y, matchCell.x, matchCell.y)) {
-              element.counter = counter + 1;
-              countedCells.push(element);
-              if (checkStart(element.x, element.y, startCell.x, startCell.y)) {
-                match = true;
-              }
-            }
-
-          })
-        })
-      })
-
-      counter = counter + 1;
-
-    }
-
-  }
-
-  if (match === true) {
-    return true;
-  }
-
-}
-
 function xcoord(number) {
   return (1 + ((number % _store.columns)));
 }
@@ -283,41 +195,30 @@ function addItem(items, i, item) {
   return items;
 }
 
+/*
+ * accepts a an array of @items representing the grid or stage and paints an @item (1 or 0) using the index i
+ */
 function paintItem(items, i, item) {
   let $new = items.splice(i, 1, item);
-  console.log($new);
-  console.log(items);
-
   return items;
 }
 
-function unPaintItem(items, i, item) {
-  let $new = items.splice(i, 1, item);
-  console.log(items);
-  return items;
-}
+// function unPaintItem(items, i, item) {
+//   let $new = items.splice(i, 1, item);
+//   // console.log(items);
+//   return items;
+// }
 
 
 const removeItem = (items, i) =>
   items.slice(0, i - 1).concat(items.slice(i, items.length));
 
 function moveClockwise() {
-  // use for testing shapes
-  // lets get a shape
-  // let shape = _store.shapes[0].shape;
-  // let shapeWidth = _store.shapes[0].width;
-  // let shapeHeigth = _store.shapes[0].height;
-  // console.log(shape);
-  // console.log(shapeWidth);
-  // console.log(shapeHeigth);
-  // // add shape to canvas
-  // // start with top centre
-  // //calc center top
-  // let startx = parseInt(_store.columns / 2);
-  // startx = startx - parseInt(shapeWidth / 2);
-  // console.log(startx);
-  // take stage and add our
-  // console.log(_store.shapes.length);
+
+
+}
+
+function chooseRandom() {
   let randShape = Math.floor((Math.random() * _store.shapes.length))
   paintShape(randShape);
 }
@@ -361,37 +262,31 @@ function paintShape(i) {
 
 }
 
+/*
+ * used to update an array from grid or canvas
+ */
 function updatePaintShape(currentItem) {
-  // use for testing shapes
-  // lets get a shape
 
-  console.log(currentItem);
   currentItem.forEach(paintShapeItem)
 
   function paintShapeItem(item, index, arr) {
     let limit = _store.columns * _store.rows;
     if (item < limit) {
-      console.log(item);
       paintItem(_store.grid, item, 1);
     }
   }
 
 }
 
+/*
+ *  accepts an array of values and removes them from the grid
+ */
 function unPaintShape(currentItem) {
-  // use for testing shapes
-  // lets get a shape
-  console.log(currentItem);
-
   currentItem.forEach(unPaintShapeItem)
 
   function unPaintShapeItem(item, index, arr) {
-    // console.log(index, shapeWidth);
-    unPaintItem(_store.grid, item, 0);
+    paintItem(_store.grid, item, 0);
   }
-
-  console.log(_store.grid);
-
 
 }
 
@@ -430,7 +325,7 @@ function gravity() {
 
   // console.log(_store.currentItem)
   if (_store.currentItem.length !== 0) {
-    console.log(_store.currentItem.length);
+    // console.log(_store.currentItem.length);
     let tempCurrent = _store.currentItem.map(addGravity);
     // console.log(tempCurrent)
     // clean up
@@ -445,6 +340,7 @@ function gravity() {
 
 }
 
+
 function addGravity(x, index, arr) {
   let limit = _store.columns * _store.rows;
   if (x + 10 < limit) {
@@ -457,17 +353,21 @@ function addGravity(x, index, arr) {
 function startGame() {
   // get current time in store and increase by one every second
   // let currentTime = _store.timer;
-  startTimer();
+  console.log(_store.state);
 
+  startTimer();
+  _store.state = 1;
+  console.log(_store.state);
   // drup current block by one
 
 }
 
 function startTimer() {
   setInterval(() => {
-    if (_store.timer < 17) {
+    // console.log(_store.state);
+    if (_store.state === 1) {
       _store.timer = _store.timer + 1;
-      console.log(_store.timer);
+      // console.log(_store.timer);
       //call gravity after every second
       // console.log(_store.currentItem);
       unPaintShape(_store.currentItem);
@@ -516,11 +416,12 @@ AppDispatcher.register((payload) => {
     case GridsterConstants.UPDATE_GRAVITY:
       // call function to update store here = add 10 cells to beginning - remove 10 cells at the end
       // removeBottom();
-      unPaintShape(_store.currentItem);
-      gravity();
+      // unPaintShape(_store.currentItem);
+      // gravity();
       // paintShape()
-      updatePaintShape(_store.currentItem)
-        // addTop();
+      // updatePaintShape(_store.currentItem)
+
+      // addTop();
       GridsterStore.emit(CHANGE_EVENT);
       break;
 
@@ -538,12 +439,13 @@ AppDispatcher.register((payload) => {
 
     case GridsterConstants.MOVE_CLOCKWISE:
       // call function to update store here = add 10 cells to beginning - remove 10 cells at the end
-      moveClockwise();
       GridsterStore.emit(CHANGE_EVENT);
       break;
 
     case GridsterConstants.START_GAME:
       // call function to update store here = add 10 cells to beginning - remove 10 cells at the end
+      // startGame();
+      chooseRandom();
       startGame();
       GridsterStore.emit(CHANGE_EVENT);
       break;
@@ -573,15 +475,6 @@ AppDispatcher.register((payload) => {
         _store.grid[clickIndex].clicked = "false";
         //
       }
-
-      // on click check for connection
-      // let unVisited = _store.grid.filter((obj => (obj.clicked === "true")));
-
-      // let end = _store.grid.filter((obj => (obj.clicked === "end")));
-
-      // let start = _store.grid.filter((obj => (obj.clicked === "start")));
-
-      // isEndVisited(unVisited, end, start);
 
       GridsterStore.emit(CHANGE_EVENT);
 
