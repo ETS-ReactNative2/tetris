@@ -424,7 +424,8 @@ function addRight(item, index, arr) {
     return item = item + 1;
   } else {
     //check if first column
-    if (item + 1 % _store.columns !== 0) {
+    // console.log((item + 1) % _store.columns);
+    if ((item + 1) % _store.columns !== 0) {
       // need to also check if element already exists in grid
       if (_store.grid[item + 1] !== 1) {
         return item = item + 1;
