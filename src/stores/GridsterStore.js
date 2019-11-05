@@ -206,7 +206,7 @@ function paintItem(items, i, item) {
 }
 
 /*
- * accepts a an item from and array of @items representing the grid or stage and paints an @item (1 or 0) using the index i
+ * accepts a an item from and array of @items representing the grid or stage and paints an @item (0) using the index i
  */
 const removeItem = (items, i) =>
   items.slice(0, i - 1).concat(items.slice(i, items.length));
@@ -388,6 +388,7 @@ function paintShapeItem(item, index, arr) {
 }
 /*
  * used to update an array from grid or canvas
+ * takes and array of items @currentItem - loops through and paints on the canvas
  */
 function updatePaintShape(currentItem) {
 
@@ -403,7 +404,7 @@ function updatePaintShape(currentItem) {
 }
 
 /*
- *  accepts an array of values and removes them from the grid
+ *  accepts an array of values and removes them from the grid - sets to 0
  */
 function unPaintShape(currentItem) {
   currentItem.forEach(unPaintShapeItem)
@@ -473,6 +474,12 @@ function removeBottom() {
   _store.grid.splice((_store.columns * _store.rows) - _store.columns - 1, _store.columns);
 }
 
+function addTop() {
+  // console.log('this is where we add cells to top or beginning of array', _store.columns);
+  // use unshift
+  _store.grid.unshift(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+}
+
 /*
  * moves the _store.currentItem down one
  */
@@ -526,10 +533,52 @@ function dropNext() {
  * checks for any filled rows
  */
 function checkRows() {
-  console.log('check rows');
+  // console.log('check rows');
+  // console.log(_store.grid);
+  // console.log(_store.rows);
+  let tempGrid = _store.grid;
+  // console.log(tempGrid)
+
+  //counts through from high to low
+  for (let i = 0; i < _store.rows; i++) {
+
+    let tempLength = tempGrid.length;
+    // console.log(tempLength)
+
+    let temp = tempGrid.slice(tempLength - ((_store.columns * i) + _store.columns), tempLength - (_store.columns * i));
+
+    //check each row for alll matching ones
+    // console.log(temp)
+
+    let count = 0;
+    //counts through from high to low
+    for (let j = 0; j < _store.columns; j++) {
+
+      let tempj = temp.slice((temp.length - 1) - j)[0];
+      if (tempj === 1) {
+        count = count + 1;
+
+      }
+      // console.log(tempj);
+    }
+    // console.log(count);
+    if (count === 10) {
+      _store.score = _store.score + 10;
+      // console.log('i', i)
+      let temp = _store.grid.splice(tempLength - ((_store.columns * i) + _store.columns), tempLength - (_store.columns * i));
+      addTop();
+      // console.log(temp);
+      // console.log(tempGrid);
+
+      // we also need to
+      // 1. get the row of items and remove from the
+      // 2. insert rows at the top
+    }
+  }
   // loop through grid in groups or rows
   // if they all equal 1 remove
   // also increase score by 10
+
 
   // // reset current item
   // _store.currentItem.length = 0;
