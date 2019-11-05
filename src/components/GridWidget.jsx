@@ -120,6 +120,7 @@ export default class GridWidget extends Component {
     return (
       <div className="container">
         <div className="inner-container" >
+          <span className="score">Score: {this.state.score}</span>
           <form>
             <Button text="Down" onclick={this._onGravity} />
             <Button text="Right" onclick={this._onRight} />

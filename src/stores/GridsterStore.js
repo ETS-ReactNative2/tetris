@@ -162,6 +162,7 @@ let _store = {
   state: 0,
   angle: 0,
   shape: null,
+  score: 0,
 };
 
 // Define the public event listeners and getters that
@@ -512,14 +513,33 @@ function moveCurrent(tempCurrent) {
 function dropNext() {
   // reset current item
   _store.currentItem.length = 0;
+  //check for filled rows
+  checkRows();
   //choose random shape
   let randShape = chooseRandom();
   _store.shape = randShape;
   _store.angle = 0;
-
   paintShape(randShape);
-
 }
+
+/*
+ * checks for any filled rows
+ */
+function checkRows() {
+  console.log('check rows');
+  // loop through grid in groups or rows
+  // if they all equal 1 remove
+  // also increase score by 10
+
+  // // reset current item
+  // _store.currentItem.length = 0;
+  // //choose random shape
+  // let randShape = chooseRandom();
+  // _store.shape = randShape;
+  // _store.angle = 0;
+  // paintShape(randShape);
+}
+
 
 /*
  * item - should match the index in the stage
