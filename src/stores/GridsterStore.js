@@ -4,7 +4,7 @@
 import AppDispatcher from '../dispatcher/AppDispatcher';
 import { GridsterConstants } from '../constants/GridsterConstants.js';
 import { EventEmitter } from 'events';
-import { transform } from '@babel/core';
+// import { transform } from '@babel/core';
 // import { parse } from 'querystring';
 // import { AST_Statement } from 'terser';
 
@@ -73,39 +73,39 @@ let _store = {
       }
     },
     {
-      name: 'j',
+      name: 'J',
       shape: [1, 1, 1, 0, 0, 1],
       width: 3,
       height: 2,
       transformations: {
-        ninety: [-9, 0, 9, 18],
-        oneeighty: [11, 0, -11, -22],
-        twoseventy: [-18, -11, 0, 9],
-        threesixty: [22, 11, 0, -11]
+        ninety: [-9, 0, 9, -2],
+        oneeighty: [11, 0, -20, -11],
+        twoseventy: [2, -9, 0, 9],
+        threesixty: [11, 20, 0, -11]
       },
     },
     {
-      name: 'l',
+      name: 'L',
       shape: [1, 1, 1, 1, 0, 0],
       width: 3,
       height: 2,
       transformations: {
-        ninety: [-9, 0, 9, 18],
-        oneeighty: [11, 0, -11, -22],
-        twoseventy: [-18, -11, 0, 9],
-        threesixty: [22, 11, 0, -11]
+        ninety: [-9, 0, 9, -20],
+        oneeighty: [2, 11, 0, -11],
+        twoseventy: [20, -9, 0, 9],
+        threesixty: [11, 0, -11, -2]
       },
     },
     {
-      name: 't',
+      name: 'T',
       shape: [1, 1, 1, 0, 1, 0],
       width: 3,
       height: 2,
       transformations: {
-        ninety: [-9, 0, 9, 18],
-        oneeighty: [11, 0, -11, -22],
-        twoseventy: [-18, -11, 0, 9],
-        threesixty: [22, 11, 0, -11]
+        ninety: [-9, 0, 9, -11],
+        oneeighty: [11, -9, 0, -11],
+        twoseventy: [11, -9, 0, 9],
+        threesixty: [11, 0, 9, -11]
       },
       transformations2: {
         ninety: [
@@ -140,10 +140,10 @@ let _store = {
       width: 2,
       height: 2,
       transformations: {
-        ninety: [-9, 0, 9, 18],
-        oneeighty: [11, 0, -11, -22],
-        twoseventy: [-18, -9, 0, 9],
-        threesixty: [22, 11, 0, -11]
+        ninety: [0, 0, 0, 0],
+        oneeighty: [0, 0, 0, 0],
+        twoseventy: [0, 0, 0, 0],
+        threesixty: [0, 0, 0, 0]
       },
       transformations2: {
         ninety: [
@@ -298,93 +298,9 @@ function moveClockwise() {
   }
 }
 
-// function transformShape(shape, angle) {
-
-//   let sortedCurrentItem = _store.currentItem.sort(function(a, b) { return a - b });
-//   // console.log(sortedCurrentItem);
-//   sortedCurrentItem.map(addTransform);
 
 
-// }
-
-// function addTransform(item, index, arr) {
-//   // console.log(item);
-//   // console.log(index);
-
-//   // console.log(_store.angle);
-//   // console.log(_store.shape);
-//   let shape = _store.shape;
-//   let angle = _store.angle;
-
-//   // let nineT = "ninety";
-//   // console.log(_store.shapes[shape].transformations);
-//   // console.log(_store.shapes[shape].transformations.ninety);
-//   switch (angle) {
-//     case 0:
-//       let transformArray = _store.shapes[shape].transformations.ninety;
-//       console.log(transformArray)
-//         //cycle though each item and apply transformation
-
-//       // console.log(_store.shapes[shape].transformations[0].ninety)
-//       // console.log(_store.shapes[shape].transformations2[0].ninety)
-//       // console.log(_store.shapes[shape].transformations)
-//       // console.log(_store.shapes[shape].transformations.ninety)
-//       // console.log(_store.shapes[shape].transformations2.ninety)
-//       // transformShape(shape, _store.angle)
-//       _store.angle = 90;
-//       break;
-//     case 90:
-//       // console.log(_store.shapes[shape].transformations[0].oneeighty)
-//       console.log(_store.shapes[shape].transformations.oneeighty)
-//         // transformShape(shape, _store.angle)
-
-//       _store.angle = 180;
-
-//       break;
-//     case 180:
-//       console.log(_store.shapes[shape].transformations.twoseventy)
-//         // transformShape(shape, _store.angle)
-
-//       _store.angle = 270;
-//       break;
-//     case 270:
-//       // transformShape(shape, _store.angle)
-
-//       _store.angle = 0;
-//       console.log(_store.shapes[shape].transformations.threesixty)
-
-//       break;
-//     default:
-//       _store.angle = 0;
-
-//   }
-
-//   // transform depands on shape and state  i.e. 0, 90, 180, 270
-//   // transform current
-//   // -10 -9 -8 -7 -6 -5 -4 -3 -2 -1
-//   //e.g. 0 1 2 3 4 5 6 7 8 9
-//   //     10 11 12 13 14 15 16 17 18 19 20
-//   //      0000000000  from
-//   // e.g. 0000111000   11, 0, 9, -11
-//   //      0000010000
-//   // e.g. 4, 5, 6, 15
-//   // needs to be
-//   //      0000010000
-//   // e.g. 0000110000  -9, 0, 9, 11
-//   //      0000010000
-//   // -5, 4, 5, 15
-//   // needs to be
-//   //      0000010000
-//   // e.g. 0000111000   11, -9, 0, -11
-//   //      0000000000
-//   // -5, 4, 5, 6
-//   // needs to be
-//   //      0000010000
-//   // e.g. 0000011000    11, -9, 0, 9
-//   //      0000010000
-//   // -5, 5, 6, 16
-
-//   //     10 11 12 13 14 15 16 17 18 19 20
+//   //     10 11 12 13 14 15 16 17 18 19 20 J
 //   //      0000000000  from
 //   // e.g. 0000111000   11, 20, 0, -11
 //   //      0000001000
@@ -393,17 +309,15 @@ function moveClockwise() {
 //   // e.g. 0000010000  -9, 0, 9, -2
 //   //      0000110000
 
-//   // needs to be
 //   //      0000100000
-//   // e.g. 0000111000  11, 0, -10, -11
+//   // e.g. 0000111000  11, 0, -20, -11
 //   //      0000000000
 
-//   // needs to be
 //   //      0000011000
 //   // e.g. 0000010000  2, -9, 0, 9
 //   //      0000010000
 
-//   //     10 11 12 13 14 15 16 17 18 19 20
+//   //     10 11 12 13 14 15 16 17 18 19 20 L
 //   //      0000000000  from
 //   // e.g. 0000111000   11, 0, -11, -2
 //   //      0000100000
@@ -417,51 +331,9 @@ function moveClockwise() {
 //   //      0000000000
 
 //   //      0000010000
-//   // e.g. 0000010000  19, -9, 0, 9
+//   // e.g. 0000010000  20, -9, 0, 9
 //   //      0000011000
 
-//   // needs to be
-//   //      0000100000
-//   // e.g. 0000111000  11, 0, -10, -11
-//   //      0000000000
-
-//   // needs to be
-//   //      0000011000
-//   // e.g. 0000010000  2, -9, 0, 9
-//   //      0000010000
-
-//   //     10 11 12 13 14 15 16 17 18 19 20
-
-//   //      0000100000  from
-//   //      0000100000  from
-//   // e.g. 0000100000    -18, -9,0, 9
-//   //      0000100000
-//   //      0000000000
-
-//   //      0000000000
-//   //      0000000000  from
-//   // e.g. 0001111000  22, 11, 0, -11
-//   //      0000000000
-//   //      0000000000
-
-//   //      0000000000
-//   //      0000100000  from
-//   // e.g. 0000100000    -9, 0, 9, 18
-//   //      0000100000
-//   //      0000100000
-
-
-//   //      0000000000  from
-//   //      0000000000  from
-//   // e.g. 0011110000    11, 0,-11, -22
-//   //      0000000000
-//   //      0000000000
-
-//   //      0000100000  from
-//   //      0000100000  from
-//   // e.g. 0000100000    -18, -9,0, 9
-//   //      0000100000
-//   //      0000000000
 
 //   // shape and angle affect transformation.
 // }
