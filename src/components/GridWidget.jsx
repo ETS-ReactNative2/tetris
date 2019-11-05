@@ -120,11 +120,11 @@ export default class GridWidget extends Component {
       <div className="container">
         <div className="inner-container" >
           <form>
-            <Button text="drop" onclick={this._onGravity} />
-            <Button text="right" onclick={this._onRight} />
-            <Button text="left" onclick={this._onLeft} />
-            <Button text="rotate" onclick={this._onRotate} />
-            <Button text="start" onclick={this._startGame} />
+            <Button text="Down" onclick={this._onGravity} />
+            <Button text="Right" onclick={this._onRight} />
+            <Button text="Left" onclick={this._onLeft} />
+            <Button text="Rotate" onclick={this._onRotate} />
+            <Button text="Start" onclick={this._startGame} />
           </form>
         </div>
         <div className="inner-container" >
