@@ -4,6 +4,7 @@
 import AppDispatcher from '../dispatcher/AppDispatcher';
 import { GridsterConstants } from '../constants/GridsterConstants.js';
 import { EventEmitter } from 'events';
+import { transform } from '@babel/core';
 // import { parse } from 'querystring';
 // import { AST_Statement } from 'terser';
 
@@ -34,39 +35,149 @@ let _store = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   ],
   shapes: [{
-      name: 'i',
+      name: 'pipe',
       shape: [1, 1, 1, 1],
       width: 4,
       height: 1,
+      transformations: {
+        ninety: [-9, 0, 9, 18],
+        oneeighty: [11, 0, -11, -22],
+        twoseventy: [-18, -9, 0, 9],
+        threesixty: [22, 11, 0, -11]
+      },
+      transformations2: {
+        ninety: [
+          [-1, 1],
+          [0, 0],
+          [1, -1],
+          [2, -2]
+        ],
+        oneeighty: [
+          [1, 1],
+          [0, 0],
+          [-1, -1],
+          [-2, -2]
+        ],
+        twoseventy: [
+          [-2, 2],
+          [-1, -1],
+          [0, 1],
+          [1, -1]
+        ],
+        threesixty: [
+          [2, 2],
+          [1, 1],
+          [0, 1],
+          [-1, -1]
+        ]
+      }
     },
     {
-      name: 'l',
+      name: 'j',
       shape: [1, 1, 1, 0, 0, 1],
       width: 3,
       height: 2,
+      transformations: {
+        ninety: [-9, 0, 9, 18],
+        oneeighty: [11, 0, -11, -22],
+        twoseventy: [-18, -11, 0, 9],
+        threesixty: [22, 11, 0, -11]
+      },
     },
     {
-      name: 'r',
+      name: 'l',
       shape: [1, 1, 1, 1, 0, 0],
       width: 3,
       height: 2,
+      transformations: {
+        ninety: [-9, 0, 9, 18],
+        oneeighty: [11, 0, -11, -22],
+        twoseventy: [-18, -11, 0, 9],
+        threesixty: [22, 11, 0, -11]
+      },
     },
     {
       name: 't',
       shape: [1, 1, 1, 0, 1, 0],
       width: 3,
       height: 2,
+      transformations: {
+        ninety: [-9, 0, 9, 18],
+        oneeighty: [11, 0, -11, -22],
+        twoseventy: [-18, -11, 0, 9],
+        threesixty: [22, 11, 0, -11]
+      },
+      transformations2: {
+        ninety: [
+          [-1, 1],
+          [0, 0],
+          [1, -1],
+          [2, -2]
+        ],
+        oneeighty: [
+          [1, 1],
+          [0, 0],
+          [-1, -1],
+          [-2, -2]
+        ],
+        twoseventy: [
+          [-2, 2],
+          [-1, -1],
+          [0, 1],
+          [1, -1]
+        ],
+        threesixty: [
+          [2, 2],
+          [1, 1],
+          [0, 1],
+          [-1, -1]
+        ]
+      }
     },
     {
       name: 'square',
       shape: [1, 1, 1, 1],
       width: 2,
       height: 2,
+      transformations: {
+        ninety: [-9, 0, 9, 18],
+        oneeighty: [11, 0, -11, -22],
+        twoseventy: [-18, -9, 0, 9],
+        threesixty: [22, 11, 0, -11]
+      },
+      transformations2: {
+        ninety: [
+          [-1, 1],
+          [0, 0],
+          [1, -1],
+          [2, -2]
+        ],
+        oneeighty: [
+          [1, 1],
+          [0, 0],
+          [-1, -1],
+          [-2, -2]
+        ],
+        twoseventy: [
+          [-2, 2],
+          [-1, -1],
+          [0, 1],
+          [1, -1]
+        ],
+        threesixty: [
+          [2, 2],
+          [1, 1],
+          [0, 1],
+          [-1, -1]
+        ]
+      }
     }
   ],
   currentItem: [],
   timer: 0,
   state: 0,
+  angle: 0,
+  shape: null,
 };
 
 // Define the public event listeners and getters that
@@ -88,45 +199,6 @@ class GridsterStoreClass extends EventEmitter {
 
 }
 
-function clearPath() {
-  _store.grid.forEach((element, i) => {
-    if (element.path === "connected") {
-      element.path = null;
-      element.counter = Infinity;
-    }
-  })
-}
-//paint path
-// function connectPath(array) {
-//   array.forEach((element, i) => {
-//     element.path = "connected";
-//   })
-// }
-
-// function checkTop(x, y, targetX, targetY) {
-//   if (x === targetX && y + 1 === targetY) {
-//     return true;
-//   }
-// }
-
-// function checkRight(x, y, targetX, targetY) {
-//   if (x === targetX + 1 && y === targetY) {
-//     return true;
-//   }
-// }
-
-// function checkBottom(x, y, targetX, targetY) {
-//   if (x === targetX && y - 1 === targetY) {
-//     return true;
-//   }
-// }
-
-// function checkLeft(x, y, targetX, targetY) {
-//   if (x === targetX - 1 && y === targetY) {
-//     return true;
-//   }
-// }
-
 function xcoord(number) {
   return (1 + ((number % _store.columns)));
 }
@@ -135,36 +207,10 @@ function ycoord(number) {
   return (1 + parseInt(number / _store.columns, 10));
 }
 
-function addTop() {
-  // use unshift
-  _store.grid.unshift(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-}
-
-/**
- * This function moves everything on the canvas to the right
- * Updates the state in the store
- */
-// function moveRight() {
-
-//   let $first_col_item;
-//   let $last_col_item;
-
-//   for (let rows = _store.rows; rows > 0; rows--) {
-//     $last_col_item = (rows * _store.columns);
-//     // console.log($last_col_item);
-
-//     $first_col_item = $last_col_item - (_store.columns - 1);
-//     // console.log($first_col_item);
-
-//     _store.grid = removeItem(_store.grid, $last_col_item);
-//     _store.grid = addItem(_store.grid, $first_col_item, 0);
-//   }
+// function addItem(items, i, item) {
+//   let $new = items.splice(i, 0, item);
+//   return items;
 // }
-
-function addItem(items, i, item) {
-  let $new = items.splice(i, 0, item);
-  return items;
-}
 
 /*
  * accepts a an array of @items representing the grid or stage and paints an @item (1 or 0) using the index i
@@ -179,13 +225,259 @@ const removeItem = (items, i) =>
   items.slice(0, i - 1).concat(items.slice(i, items.length));
 
 function moveClockwise() {
+  let shape = _store.shape;
+  let angle = _store.angle;
+  let shapeName = _store.shapes[_store.shape].name;
+  let currentShape = _store.currentItem.sort(function(a, b) { return a - b });
 
+  console.log(shapeName);
+  console.log(currentShape);
+  // console.log(shape);
+  console.log(angle);
 
+  switch (angle) {
+    case 0:
+      let transformArray = _store.shapes[shape].transformations.ninety;
+      console.log(currentShape);
+      console.log(transformArray);
+
+      let sum = currentShape.map(function(num, i) {
+        return num + transformArray[i];
+      });
+      console.log(sum);
+
+      _store.angle = 90;
+      moveCurrent(sum);
+      // return sum;
+      break;
+    case 90:
+      transformArray = _store.shapes[shape].transformations.oneeighty;
+      console.log(currentShape);
+
+      console.log(transformArray);
+
+      sum = currentShape.map(function(num, i) {
+        return num + transformArray[i];
+      });
+      console.log(sum);
+
+      _store.angle = 180;
+      moveCurrent(sum);
+
+      return sum;
+
+      break;
+    case 180:
+      // console.log(_store.shapes[shape].transformations.twoseventy)
+      transformArray = _store.shapes[shape].transformations.twoseventy;
+      sum = currentShape.map(function(num, i) {
+        return num + transformArray[i];
+      });
+      _store.angle = 270;
+      moveCurrent(sum);
+
+      return sum;
+
+      break;
+    case 270:
+      // transformShape(shape, _store.angle)
+      transformArray = _store.shapes[shape].transformations.threesixty;
+      sum = currentShape.map(function(num, i) {
+        return num + transformArray[i];
+      });
+      _store.angle = 0;
+      // console.log(_store.shapes[shape].transformations.threesixty)
+      moveCurrent(sum);
+
+      return sum;
+
+      break;
+    default:
+      _store.angle = 0;
+
+  }
 }
+
+// function transformShape(shape, angle) {
+
+//   let sortedCurrentItem = _store.currentItem.sort(function(a, b) { return a - b });
+//   // console.log(sortedCurrentItem);
+//   sortedCurrentItem.map(addTransform);
+
+
+// }
+
+// function addTransform(item, index, arr) {
+//   // console.log(item);
+//   // console.log(index);
+
+//   // console.log(_store.angle);
+//   // console.log(_store.shape);
+//   let shape = _store.shape;
+//   let angle = _store.angle;
+
+//   // let nineT = "ninety";
+//   // console.log(_store.shapes[shape].transformations);
+//   // console.log(_store.shapes[shape].transformations.ninety);
+//   switch (angle) {
+//     case 0:
+//       let transformArray = _store.shapes[shape].transformations.ninety;
+//       console.log(transformArray)
+//         //cycle though each item and apply transformation
+
+//       // console.log(_store.shapes[shape].transformations[0].ninety)
+//       // console.log(_store.shapes[shape].transformations2[0].ninety)
+//       // console.log(_store.shapes[shape].transformations)
+//       // console.log(_store.shapes[shape].transformations.ninety)
+//       // console.log(_store.shapes[shape].transformations2.ninety)
+//       // transformShape(shape, _store.angle)
+//       _store.angle = 90;
+//       break;
+//     case 90:
+//       // console.log(_store.shapes[shape].transformations[0].oneeighty)
+//       console.log(_store.shapes[shape].transformations.oneeighty)
+//         // transformShape(shape, _store.angle)
+
+//       _store.angle = 180;
+
+//       break;
+//     case 180:
+//       console.log(_store.shapes[shape].transformations.twoseventy)
+//         // transformShape(shape, _store.angle)
+
+//       _store.angle = 270;
+//       break;
+//     case 270:
+//       // transformShape(shape, _store.angle)
+
+//       _store.angle = 0;
+//       console.log(_store.shapes[shape].transformations.threesixty)
+
+//       break;
+//     default:
+//       _store.angle = 0;
+
+//   }
+
+//   // transform depands on shape and state  i.e. 0, 90, 180, 270
+//   // transform current
+//   // -10 -9 -8 -7 -6 -5 -4 -3 -2 -1
+//   //e.g. 0 1 2 3 4 5 6 7 8 9
+//   //     10 11 12 13 14 15 16 17 18 19 20
+//   //      0000000000  from
+//   // e.g. 0000111000   11, 0, 9, -11
+//   //      0000010000
+//   // e.g. 4, 5, 6, 15
+//   // needs to be
+//   //      0000010000
+//   // e.g. 0000110000  -9, 0, 9, 11
+//   //      0000010000
+//   // -5, 4, 5, 15
+//   // needs to be
+//   //      0000010000
+//   // e.g. 0000111000   11, -9, 0, -11
+//   //      0000000000
+//   // -5, 4, 5, 6
+//   // needs to be
+//   //      0000010000
+//   // e.g. 0000011000    11, -9, 0, 9
+//   //      0000010000
+//   // -5, 5, 6, 16
+
+//   //     10 11 12 13 14 15 16 17 18 19 20
+//   //      0000000000  from
+//   // e.g. 0000111000   11, 20, 0, -11
+//   //      0000001000
+//   // needs to be
+//   //      0000010000
+//   // e.g. 0000010000  -9, 0, 9, -2
+//   //      0000110000
+
+//   // needs to be
+//   //      0000100000
+//   // e.g. 0000111000  11, 0, -10, -11
+//   //      0000000000
+
+//   // needs to be
+//   //      0000011000
+//   // e.g. 0000010000  2, -9, 0, 9
+//   //      0000010000
+
+//   //     10 11 12 13 14 15 16 17 18 19 20
+//   //      0000000000  from
+//   // e.g. 0000111000   11, 0, -11, -2
+//   //      0000100000
+//   // needs to be
+//   //      0000110000
+//   // e.g. 0000010000  -9, 0, 9, -20
+//   //      0000010000
+
+//   //      0000001000
+//   // e.g. 0000111000  2, 11, 0, -11
+//   //      0000000000
+
+//   //      0000010000
+//   // e.g. 0000010000  19, -9, 0, 9
+//   //      0000011000
+
+//   // needs to be
+//   //      0000100000
+//   // e.g. 0000111000  11, 0, -10, -11
+//   //      0000000000
+
+//   // needs to be
+//   //      0000011000
+//   // e.g. 0000010000  2, -9, 0, 9
+//   //      0000010000
+
+//   //     10 11 12 13 14 15 16 17 18 19 20
+
+//   //      0000100000  from
+//   //      0000100000  from
+//   // e.g. 0000100000    -18, -9,0, 9
+//   //      0000100000
+//   //      0000000000
+
+//   //      0000000000
+//   //      0000000000  from
+//   // e.g. 0001111000  22, 11, 0, -11
+//   //      0000000000
+//   //      0000000000
+
+//   //      0000000000
+//   //      0000100000  from
+//   // e.g. 0000100000    -9, 0, 9, 18
+//   //      0000100000
+//   //      0000100000
+
+
+//   //      0000000000  from
+//   //      0000000000  from
+//   // e.g. 0011110000    11, 0,-11, -22
+//   //      0000000000
+//   //      0000000000
+
+//   //      0000100000  from
+//   //      0000100000  from
+//   // e.g. 0000100000    -18, -9,0, 9
+//   //      0000100000
+//   //      0000000000
+
+//   // shape and angle affect transformation.
+// }
 
 function chooseRandom() {
   let randShape = Math.floor((Math.random() * _store.shapes.length))
+    // console.log(randShape);
+    // console.log(_store.shapes[0].transformations[0])
+    // console.log(_store.shapes[0].transformations[1].oneeighty)
+
+  // console.log(_store.shapes[0].transformations[0].ninety)
   paintShape(randShape);
+  _store.shape = randShape;
+  _store.angle = 0;
+  // record current shape and angle
+
 }
 
 function paintShape(i) {
@@ -264,6 +556,7 @@ function moveLeft() {
   if (_store.currentItem.length !== 0) {
     let initialCurrentLength = _store.currentItem.length;
     let sortedCurrentItem = _store.currentItem.sort(function(a, b) { return b - a });
+    console.log(sortedCurrentItem);
     let tempCurrent = sortedCurrentItem.map(addLeft);
     //remove items where value is undefined
     tempCurrent = tempCurrent.filter(function(element) {
@@ -345,6 +638,7 @@ function gravity() {
 function moveCurrent(tempCurrent) {
   unPaintShape(_store.currentItem);
   _store.currentItem = tempCurrent.slice(0);
+  // console.log(_store.currentItem);
   updatePaintShape(_store.currentItem);
 }
 
@@ -515,6 +809,7 @@ AppDispatcher.register((payload) => {
 
     case GridsterConstants.MOVE_CLOCKWISE:
       // call function to update store here = add 10 cells to beginning - remove 10 cells at the end
+      moveClockwise();
       GridsterStore.emit(CHANGE_EVENT);
       break;
 
