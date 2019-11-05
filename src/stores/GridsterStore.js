@@ -250,13 +250,6 @@ function moveClockwise() {
   if (tempCurrent.length <= 1) {
     return;
   }
-  // console.log(tempCurrent);
-  // console.log(tempCurrent.length);
-  // if there are 3 or more items next to axis do not rotate
-
-
-  // console.log(shapeName);
-  // console.log(currentShape)
 
   switch (angle) {
     case 0:
@@ -265,7 +258,7 @@ function moveClockwise() {
       let sum = currentShape.map(transformCurrentShapeNinety, {
         shape: shape
       });
-      console.log(sum);
+      // console.log(sum);
 
       _store.angle = 90;
       // need to check if 'new' summed array
@@ -314,16 +307,12 @@ function moveClockwise() {
  */
 function transformCurrentShapeNinety(num, i, array) {
   let shape = this.shape;
-  // console.log(shape);
-  // console.log('existing', num);
 
   let currentShape = array;
   // console.log(currentShape)
   let transformArray = _store.shapes[shape].transformations.ninety;
   // here we can check if transformed array is valid?
   let newNumber = num + transformArray[i];
-  // console.log(newNumber);
-  // console.log(_store.currentItem.includes(newNumber));
   if (_store.currentItem.includes(newNumber)) {
     return newNumber;
   } else {
@@ -344,16 +333,24 @@ function chooseRandom() {
   return randShape;
 }
 
+function isOdd(num) { return num % 2; }
+
+/*
+ * takes a integer representing the array count of the random shape
+ * enables look up of shape based on matching array id
+ * paints this shape on the canvas
+ */
 function paintShape(i) {
-  // use for testing shapes
-  // lets get a shape
   let shape = _store.shapes[i].shape;
   let shapeWidth = _store.shapes[i].width;
   let startx = parseInt(_store.columns / 2);
   startx = startx - parseInt(shapeWidth / 2);
+  let starty = startx - 1;
+  let startz = startx + 1;
+  let startxx = startxx + 2;
 
-  if (_store.grid[startx] === 1) {
-    // console.log(_store.grid[startx]);
+  // stop game if startx is not available
+  if (_store.grid[startx] === 1 || _store.grid[starty] === 1 || _store.grid[startz] === 1 || _store.grid[startxx] === 1) {
     stopGame();
     return;
   } else {
@@ -363,6 +360,7 @@ function paintShape(i) {
 
 /*
  * used by paintShape to Map a random shape @array onto canvas
+ * also stores current shape in currentItem
  */
 function paintShapeItem(item, index, arr) {
   let startx = this.startx;
@@ -392,9 +390,9 @@ function paintShapeItem(item, index, arr) {
  */
 function updatePaintShape(currentItem) {
 
-  currentItem.forEach(paintShapeItem)
+  currentItem.forEach(updatePaintShapeItem)
 
-  function paintShapeItem(item, index, arr) {
+  function updatePaintShapeItem(item, index, arr) {
     let limit = _store.columns * _store.rows;
     if (item < limit) {
       paintItem(_store.grid, item, 1);
@@ -496,7 +494,7 @@ function moveDown() {
     if (initialCurrentLength === processedCurrentLength) {
       moveCurrent(tempCurrent);
     } else {
-      startAgain();
+      dropNext();
     }
   }
 }
@@ -508,17 +506,19 @@ function moveCurrent(tempCurrent) {
   updatePaintShape(_store.currentItem);
 }
 
-function startAgain() {
+/*
+ * start again
+ */
+function dropNext() {
   // reset current item
-
   _store.currentItem.length = 0;
   //choose random shape
-  console.log(_store.grid)
   let randShape = chooseRandom();
-  // check if any of the start cells are occupied
-  paintShape(randShape);
   _store.shape = randShape;
   _store.angle = 0;
+
+  paintShape(randShape);
+
 }
 
 /*
@@ -624,26 +624,20 @@ function clearGrid() {
 function stopGame() {
   // startTimer();
   _store.state = 0;
+  // _store.shape = randShape;
+  // _store.angle = 0;
 }
 
 
 function startTimer() {
   setInterval(() => {
-    // console.log(_store.state);
     if (_store.state === 1) {
       _store.timer = _store.timer + 1;
-      console.log(_store.timer);
-
-      // console.log(_store.timer);
-      //call gravity after every second
-      // console.log(_store.currentItem);
-      // unPaintShape(_store.currentItem);
       moveDown();
       GridsterStore.emit(CHANGE_EVENT);
     } else {
       return;
     }
-    // console.log(temp);
   }, 1000);
 }
 
@@ -705,10 +699,6 @@ AppDispatcher.register((payload) => {
 
     case GridsterConstants.START_GAME:
       // call function to update store here = add 10 cells to beginning - remove 10 cells at the end
-      // let randShape = chooseRandom();
-      // paintShape(randShape);
-      // _store.shape = randShape;
-      // _store.angle = 0;
       startGame();
       if (_store.timer === 0) {
         startTimer();

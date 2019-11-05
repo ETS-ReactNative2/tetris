@@ -48,6 +48,7 @@ export default class Button extends Component {
           onMouseDown={this._onMouseDown}
           type="button"
           onClick={this.props.onclick}
+          disabled={this.props.disabled}
           style={{
               marginLeft: '.4rem',
               borderRadius: '.4rem',

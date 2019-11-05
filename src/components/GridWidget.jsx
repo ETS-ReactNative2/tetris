@@ -116,6 +116,7 @@ export default class GridWidget extends Component {
 
 
   render() {
+    const enabled = this.state.state < 1;
     return (
       <div className="container">
         <div className="inner-container" >
@@ -124,7 +125,7 @@ export default class GridWidget extends Component {
             <Button text="Right" onclick={this._onRight} />
             <Button text="Left" onclick={this._onLeft} />
             <Button text="Rotate" onclick={this._onRotate} />
-            <Button text="Start" onclick={this._startGame} />
+            <Button text="Start" disabled={!enabled} onclick={this._startGame} />
           </form>
         </div>
         <div className="inner-container" >
