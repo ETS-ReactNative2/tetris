@@ -565,7 +565,9 @@ function checkRows() {
     if (count === 10) {
       _store.score = _store.score + 10;
       // console.log('i', i)
-      let temp = _store.grid.splice(tempLength - ((_store.columns * i) + _store.columns), tempLength - (_store.columns * i));
+      let temp = _store.grid.splice(tempLength - ((_store.columns * i) + _store.columns), _store.columns);
+      // let temp = tempGrid.slice(tempLength - ((_store.columns * i) + _store.columns), tempLength - (_store.columns * i));
+      // console.log(temp);
       addTop();
       // console.log(temp);
       // console.log(tempGrid);
