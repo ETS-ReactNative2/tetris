@@ -184,6 +184,10 @@ class GridsterStoreClass extends EventEmitter {
 
 }
 
+// Initialize the singleton to register with the
+// dispatcher and export for React components
+const GridsterStore = new GridsterStoreClass();
+
 function xcoord(number) {
   return (1 + ((number % _store.columns)));
 }
@@ -191,11 +195,6 @@ function xcoord(number) {
 function ycoord(number) {
   return (1 + parseInt(number / _store.columns, 10));
 }
-
-// function addItem(items, i, item) {
-//   let $new = items.splice(i, 0, item);
-//   return items;
-// }
 
 /*
  * accepts a an array of @items representing the grid or stage and paints an @item (1 or 0) using the index i
@@ -212,14 +211,14 @@ const removeItem = (items, i) =>
   items.slice(0, i - 1).concat(items.slice(i, items.length));
 
 function checkColumnZero(currentValue) {
-  // console.log(currentValue % _store.columns);
-  // console.log((currentValue + 1) % _store.columns);
-
   if (currentValue % _store.columns !== 0 && (currentValue + 1) % _store.columns !== 0) {
     return currentValue;
   }
 }
 
+/*
+ * returns the value if not in columnOne
+ */
 function checkColumnOne(currentValue) {
   if ((currentValue - 1) % _store.columns !== 0 && (currentValue + 2) % _store.columns !== 0) {
     return currentValue;
@@ -234,17 +233,19 @@ function moveClockwise() {
   let angle = _store.angle;
   let shapeName = _store.shapes[_store.shape].name;
   let currentShape = _store.currentItem.sort(function(a, b) { return a - b });
-  // if current shape has 3 or more items that are in column 0 return
   let tempCurrent = currentShape.map(checkColumnOne);
+  // if current shape has 4 in column 1 return
+
   tempCurrent = tempCurrent.filter(function(element) {
     return element !== undefined;
   });
   if (tempCurrent.length <= 0) {
     return;
   }
+  //let also check if the shape has 3 elements near the side
+  // if current shape has 3 or more items that are in column 0 return
 
   tempCurrent = currentShape.map(checkColumnZero);
-  // console.log(tempCurrent);
   tempCurrent = tempCurrent.filter(function(element) {
     return element !== undefined;
   });
@@ -259,7 +260,6 @@ function moveClockwise() {
       let sum = currentShape.map(transformCurrentShapeNinety, {
         shape: shape
       });
-      // console.log(sum);
 
       _store.angle = 90;
       // need to check if 'new' summed array
@@ -310,18 +310,15 @@ function transformCurrentShapeNinety(num, i, array) {
   let shape = this.shape;
 
   let currentShape = array;
-  // console.log(currentShape)
   let transformArray = _store.shapes[shape].transformations.ninety;
   // here we can check if transformed array is valid?
   let newNumber = num + transformArray[i];
   if (_store.currentItem.includes(newNumber)) {
     return newNumber;
   } else {
-    //check does not hit sides
+    //check does not hit sides / other blocks
     // if existing shape has 3 or more elements that are in the first column, return
-    // console.log(num % _store.columns);
 
-    // console.log(newNumber % _store.columns);
     return newNumber;
   }
 }
@@ -348,7 +345,7 @@ function paintShape(i) {
   startx = startx - parseInt(shapeWidth / 2);
   let starty = startx - 1;
   let startz = startx + 1;
-  let startxx = startxx + 2;
+  let startxx = startx + 2;
 
   // stop game if startx is not available
   if (_store.grid[startx] === 1 || _store.grid[starty] === 1 || _store.grid[startz] === 1 || _store.grid[startxx] === 1) {
@@ -423,9 +420,7 @@ function moveLeft() {
   if (_store.currentItem.length !== 0) {
     let initialCurrentLength = _store.currentItem.length;
     let sortedCurrentItem = _store.currentItem.sort(function(a, b) { return b - a });
-    // console.log(sortedCurrentItem);
     let tempCurrent = sortedCurrentItem.map(addLeft);
-    //remove items where value is undefined
     tempCurrent = tempCurrent.filter(function(element) {
       return element !== undefined;
     });
@@ -474,10 +469,15 @@ function removeBottom() {
   _store.grid.splice((_store.columns * _store.rows) - _store.columns - 1, _store.columns);
 }
 
+/**
+ * Adds a row of blanks cells to the start of the _store.grid
+ * depending on the amount of columns in the grid
+ */
 function addTop() {
-  // console.log('this is where we add cells to top or beginning of array', _store.columns);
-  // use unshift
-  _store.grid.unshift(0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+  let columns = _store.columns;
+  for (let i = 0; i < columns; i++) {
+    _store.grid.unshift(0);
+  }
 }
 
 /*
@@ -507,10 +507,14 @@ function moveDown() {
   }
 }
 
+/*
+ * Used to unpaint current item
+ * update the currentItem in the store
+ * update the new curreent shape and print on the canvas
+ */
 function moveCurrent(tempCurrent) {
   unPaintShape(_store.currentItem);
   _store.currentItem = tempCurrent.slice(0);
-  // console.log(_store.currentItem);
   updatePaintShape(_store.currentItem);
 }
 
@@ -533,23 +537,16 @@ function dropNext() {
  * checks for any filled rows
  */
 function checkRows() {
-  // console.log('check rows');
-  // console.log(_store.grid);
-  // console.log(_store.rows);
   let tempGrid = _store.grid;
-  // console.log(tempGrid)
 
   //counts through from high to low
   for (let i = 0; i < _store.rows; i++) {
 
     let tempLength = tempGrid.length;
-    // console.log(tempLength)
 
     let temp = tempGrid.slice(tempLength - ((_store.columns * i) + _store.columns), tempLength - (_store.columns * i));
 
     //check each row for alll matching ones
-    // console.log(temp)
-
     let count = 0;
     //counts through from high to low
     for (let j = 0; j < _store.columns; j++) {
@@ -559,36 +556,21 @@ function checkRows() {
         count = count + 1;
 
       }
-      // console.log(tempj);
     }
-    // console.log(count);
+    /* 1. get the row of items and remove from the
+     * 2. insert rows at the top
+     */
     if (count === 10) {
       _store.score = _store.score + 10;
-      // console.log('i', i)
-      let temp = _store.grid.splice(tempLength - ((_store.columns * i) + _store.columns), _store.columns);
-      // let temp = tempGrid.slice(tempLength - ((_store.columns * i) + _store.columns), tempLength - (_store.columns * i));
-      // console.log(temp);
-      addTop();
-      // console.log(temp);
-      // console.log(tempGrid);
 
-      // we also need to
-      // 1. get the row of items and remove from the
-      // 2. insert rows at the top
+      let tempLength2 = _store.grid.length;
+      let temp = _store.grid.splice(tempLength2 - ((_store.columns * i) + _store.columns), _store.columns);
+      addTop();
+
+      // not always removing multiple rows ?
     }
   }
-  // loop through grid in groups or rows
-  // if they all equal 1 remove
-  // also increase score by 10
 
-
-  // // reset current item
-  // _store.currentItem.length = 0;
-  // //choose random shape
-  // let randShape = chooseRandom();
-  // _store.shape = randShape;
-  // _store.angle = 0;
-  // paintShape(randShape);
 }
 
 
@@ -631,8 +613,6 @@ function addLeft(item, index, arr) {
   //      0000010000
   // 4, 5, 6, 15 become
   // 3 , 4, 5, 14
-  // console.log(item);
-  // console.log(_store.currentItem.includes(item - 1));
 
   if (_store.currentItem.includes(item - 1)) {
     return item = item - 1;
@@ -660,7 +640,6 @@ function addRight(item, index, arr) {
     return item = item + 1;
   } else {
     //check if first column
-    // console.log((item + 1) % _store.columns);
     if ((item + 1) % _store.columns !== 0) {
       // need to also check if element already exists in grid
       if (_store.grid[item + 1] !== 1) {
@@ -693,12 +672,8 @@ function clearGrid() {
 }
 
 function stopGame() {
-  // startTimer();
   _store.state = 0;
-  // _store.shape = randShape;
-  // _store.angle = 0;
 }
-
 
 function startTimer() {
   setInterval(() => {
@@ -711,10 +686,6 @@ function startTimer() {
     }
   }, 1000);
 }
-
-// Initialize the singleton to register with the
-// dispatcher and export for React components
-const GridsterStore = new GridsterStoreClass();
 
 // Register each of the actions with the dispatcher
 // by changing the store's data and emitting a
