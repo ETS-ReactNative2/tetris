@@ -46,9 +46,6 @@ export default class GridWidget extends Component {
       timerStart: 0,
       timerTime: 0
     };
-  }
-
-  componentWillMount() {
     document.addEventListener("keydown", this._onKeyDown.bind(this));
     window.addEventListener("keydown", function(e) {
       // space and arrow keys
@@ -56,7 +53,8 @@ export default class GridWidget extends Component {
           e.preventDefault();
       }
   }, false);
-}
+  }
+
   componentDidMount() {
     GridsterStore.addChangeListener(this._onChange);
     this.setState(GridsterStore.getGrid());
@@ -70,9 +68,6 @@ export default class GridWidget extends Component {
             e.preventDefault();
         }
     }, false);
-  }
-
-  componentWillUnmount() {
     GridsterStore.removeChangeListener(this._onChange);
   }
 
