@@ -130,6 +130,7 @@ export default class GridWidget extends Component {
           </form>
         </div>
         <div className="inner-container" >
+          <span>{this.state.interval}</span>
           <Grid
             grid={this.state.grid} columns="10" rows="15"
           />

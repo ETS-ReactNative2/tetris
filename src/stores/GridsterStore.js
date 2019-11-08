@@ -159,6 +159,7 @@ let _store = {
   angle: 0,
   shape: null,
   score: 0,
+  interval: 1000,
 };
 
 // Define the public event listeners and getters that
@@ -563,7 +564,8 @@ function checkRows() {
       let tempLength2 = _store.grid.length;
       _store.grid.splice(tempLength2 - ((_store.columns * i) + _store.columns), _store.columns);
       addTop();
-
+      decreaseInterval();
+      startTimer();
       // not always removing multiple rows ?
     }
   }
@@ -660,6 +662,7 @@ function startGame() {
   let randShape = chooseRandom();
   _store.shape = randShape;
   _store.angle = 0;
+  setInitialInterval();
   paintShape(randShape);
   _store.state = 1;
 }
@@ -679,18 +682,41 @@ function stopGame() {
 }
 
 /*
+ * make decreace the applications interval state
+ */
+function decreaseInterval() {
+  _store.interval = _store.interval - (_store.interval * .1);
+  clearInterval(gameInterval);
+}
+
+/*
+ * reset decreace the applications interval state
+ */
+function setInitialInterval() {
+  _store.interval = 1000;
+}
+
+//declare in global scope
+var gameInterval;
+/*
  * start timer
  */
 function startTimer() {
-  setInterval(() => {
-    if (_store.state === 1) {
-      _store.timer = _store.timer + 1;
-      moveDown();
-      GridsterStore.emit(CHANGE_EVENT);
-    } else {
-      return;
-    }
-  }, 1000);
+  gameInterval = window.setInterval(startTimerCallback, _store.interval);
+}
+
+
+/*
+ * start timer calback
+ */
+function startTimerCallback() {
+  if (_store.state === 1) {
+    _store.timer = _store.timer + 1;
+    moveDown();
+    GridsterStore.emit(CHANGE_EVENT);
+  } else {
+    return;
+  }
 }
 
 // Register each of the actions with the dispatcher
