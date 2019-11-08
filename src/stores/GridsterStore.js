@@ -5,10 +5,6 @@ import AppDispatcher from '../dispatcher/AppDispatcher';
 import { GridsterConstants } from '../constants/GridsterConstants.js';
 import { EventEmitter } from 'events';
 import { StartGrid } from './StartGrid';
-// import { transform } from '@babel/core';
-// import { parse } from 'querystring';
-// import { AST_Statement } from 'terser';
-// console.log(StartGrid);
 EventEmitter.prototype._maxListeners = 200;
 
 const CHANGE_EVENT = 'change';
@@ -200,15 +196,15 @@ function ycoord(number) {
  * accepts a an array of @items representing the grid or stage and paints an @item (1 or 0) using the index i
  */
 function paintItem(items, i, item) {
-  let $new = items.splice(i, 1, item);
+  items.splice(i, 1, item);
   return items;
 }
 
 /*
  * accepts a an item from and array of @items representing the grid or stage and paints an @item (0) using the index i
  */
-const removeItem = (items, i) =>
-  items.slice(0, i - 1).concat(items.slice(i, items.length));
+// const removeItem = (items, i) =>
+//   items.slice(0, i - 1).concat(items.slice(i, items.length));
 
 function checkColumnZero(currentValue) {
   if (currentValue % _store.columns !== 0 && (currentValue + 1) % _store.columns !== 0) {
@@ -231,7 +227,7 @@ function checkColumnOne(currentValue) {
 function moveClockwise() {
   let shape = _store.shape;
   let angle = _store.angle;
-  let shapeName = _store.shapes[_store.shape].name;
+  // let shapeName = _store.shapes[_store.shape].name;
   let currentShape = _store.currentItem.sort(function(a, b) { return a - b });
   let tempCurrent = currentShape.map(checkColumnOne);
   // if current shape has 4 in column 1 return
@@ -309,7 +305,7 @@ function moveClockwise() {
 function transformCurrentShapeNinety(num, i, array) {
   let shape = this.shape;
 
-  let currentShape = array;
+  // let currentShape = array;
   let transformArray = _store.shapes[shape].transformations.ninety;
   // here we can check if transformed array is valid?
   let newNumber = num + transformArray[i];
@@ -331,7 +327,7 @@ function chooseRandom() {
   return randShape;
 }
 
-function isOdd(num) { return num % 2; }
+// function isOdd(num) { return num % 2; }
 
 /*
  * takes a integer representing the array count of the random shape
@@ -463,11 +459,12 @@ function moveRight() {
   }
 }
 
-function removeBottom() {
-  // console.log('number', _store.columns * _store.rows);
-  // console.log('this is where we remove cells from bottom or end', (_store.columns * _store.rows) - _store.columns -1);
-  _store.grid.splice((_store.columns * _store.rows) - _store.columns - 1, _store.columns);
-}
+/*
+ * this is where we remove cells from bottom or end
+ */
+// function removeBottom() {
+//   _store.grid.splice((_store.columns * _store.rows) - _store.columns - 1, _store.columns);
+// }
 
 /**
  * Adds a row of blanks cells to the start of the _store.grid
@@ -564,7 +561,7 @@ function checkRows() {
       _store.score = _store.score + 10;
 
       let tempLength2 = _store.grid.length;
-      let temp = _store.grid.splice(tempLength2 - ((_store.columns * i) + _store.columns), _store.columns);
+      _store.grid.splice(tempLength2 - ((_store.columns * i) + _store.columns), _store.columns);
       addTop();
 
       // not always removing multiple rows ?
@@ -667,14 +664,23 @@ function startGame() {
   _store.state = 1;
 }
 
+/*
+ * clear grid
+ */
 function clearGrid() {
   _store.grid = StartGrid.slice(0);
 }
 
+/*
+ * stop game
+ */
 function stopGame() {
   _store.state = 0;
 }
 
+/*
+ * start timer
+ */
 function startTimer() {
   setInterval(() => {
     if (_store.state === 1) {
@@ -808,7 +814,8 @@ AppDispatcher.register((payload) => {
       GridsterStore.emit(CHANGE_EVENT);
       break;
 
-      return true;
+    default:
+      return;
   }
 
 });

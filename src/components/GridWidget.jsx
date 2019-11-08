@@ -6,11 +6,11 @@ import Button from './Button';
 import Grid from './Grid';
 import { updateRow, updateColumn, generateGrid, generateStart, generateEnd, updateGravity, moveClockwise, startGame, moveRight, moveLeft, keyDown} from '../actions/GridsterActions.js';
 
-const spanStyle = {
-  marginRight: '1rem',
-  marginTop: '1.2rem',
-  float: 'left'
-}
+// const spanStyle = {
+//   marginRight: '1rem',
+//   marginTop: '1.2rem',
+//   float: 'left'
+// }
 
 function inputValidation(value) {
   //check for number input
@@ -122,9 +122,9 @@ export default class GridWidget extends Component {
         <div className="inner-container" >
           <span className="score">Score: {this.state.score}</span>
           <form>
-            <Button text="Down" onclick={this._onGravity} />
-            <Button text="Right" onclick={this._onRight} />
             <Button text="Left" onclick={this._onLeft} />
+            <Button text="Right" onclick={this._onRight} />
+            <Button text="Down" onclick={this._onGravity} />
             <Button text="Rotate" onclick={this._onRotate} />
             <Button text="Start" disabled={!enabled} onclick={this._startGame} />
           </form>
