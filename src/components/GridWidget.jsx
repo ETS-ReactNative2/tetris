@@ -12,6 +12,7 @@ import { updateRow, updateColumn, generateGrid, generateStart, generateEnd, upda
 //   float: 'left'
 // }
 
+
 function inputValidation(value) {
   //check for number input
   if(typeof value === 'number') {
@@ -47,9 +48,28 @@ export default class GridWidget extends Component {
     };
   }
 
+  componentWillMount() {
+    document.addEventListener("keydown", this._onKeyDown.bind(this));
+    window.addEventListener("keydown", function(e) {
+      // space and arrow keys
+      if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+          e.preventDefault();
+      }
+  }, false);
+}
   componentDidMount() {
     GridsterStore.addChangeListener(this._onChange);
     this.setState(GridsterStore.getGrid());
+  }
+
+  componentWillUnmount() {
+      document.removeEventListener("keydown", this._onKeyDown.bind(this));
+      window.removeEventListener("keydown", function(e) {
+        // space and arrow keys
+        if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+            e.preventDefault();
+        }
+    }, false);
   }
 
   componentWillUnmount() {
@@ -109,19 +129,30 @@ export default class GridWidget extends Component {
   }
 
   _onKeyDown(e) {
-    console.log("key pressed", e);
+    // console.log("key pressed", e);
+    console.log("key pressed", e.key);
+
+    // console.log("key pressed", e.charCode);
+    // console.log("key pressed", e.keyCode);
+
     keyDown();
   }
 
-
+  // onKeyPressed(e) {
+  //   console.log("e pressed", e);
+  //   console.log("key pressed", e.key);
+  //   console.log("charCode pressed", e.charCode);
+  //   console.log("keyCode pressed", e.keyCode);
+  //   keyDown();
+  // }
 
   render() {
     const enabled = this.state.state < 1;
     return (
-      <div className="container">
+      <div className="container" >
         <div className="inner-container" >
           <span className="score">Score: {this.state.score}</span>
-          <form>
+          <form >
             <Button text="Left" onclick={this._onLeft} />
             <Button text="Right" onclick={this._onRight} />
             <Button text="Down" onclick={this._onGravity} />
@@ -130,7 +161,7 @@ export default class GridWidget extends Component {
           </form>
         </div>
         <div className="inner-container" >
-          <span>{this.state.interval}</span>
+          {/* <span>{this.state.interval}</span> */}
           <Grid
             grid={this.state.grid} columns="10" rows="15"
           />

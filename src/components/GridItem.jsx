@@ -11,10 +11,10 @@ export default class GridItem extends Component {
     super(props);
     this._widthCalc = this._widthCalc.bind(this);
     this._onChange = this._onChange.bind(this);
-    this._onClick = this._onClick.bind(this);
-    this._onMouseEnter = this._onMouseEnter.bind(this);
-    this._onMouseLeave = this._onMouseLeave.bind(this);
-    this._onMouseDown = this._onMouseDown.bind(this);
+    // this._onClick = this._onClick.bind(this);
+    // this._onMouseEnter = this._onMouseEnter.bind(this);
+    // this._onMouseLeave = this._onMouseLeave.bind(this);
+    // this._onMouseDown = this._onMouseDown.bind(this);
 
     this.state = {
       columns: 8,

@@ -5,14 +5,14 @@ import AppDispatcher from '../dispatcher/AppDispatcher';
 import { GridsterConstants } from '../constants/GridsterConstants.js';
 import { EventEmitter } from 'events';
 import { StartGrid } from './StartGrid';
-EventEmitter.prototype._maxListeners = 200;
+EventEmitter.prototype._maxListeners = 400;
 
 const CHANGE_EVENT = 'change';
 
 // Define the store as an empty array
 let _store = {
   columns: 10,
-  rows: 16,
+  rows: 20,
   grid: StartGrid,
   shapes: [{
       name: 'pipe',
