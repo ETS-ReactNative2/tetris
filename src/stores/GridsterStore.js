@@ -233,6 +233,7 @@ function turnClockwise() {
   // lets restrict movement if certain conditions
   // sort curent shape low to high - transform matrix is always calculated form ther first item to the last
   let currentShape = _store.currentItem.sort(function(a, b) { return a - b });
+  console.log(currentShape);
   let tempCurrent = currentShape.map(checkColumnInset);
   // lets remove items that return undefined
   tempCurrent = tempCurrent.filter(function(element) {
@@ -260,40 +261,74 @@ function turnClockwise() {
       let sum = currentShape.map(transformCurrentShapeNinety, {
         shape: shape
       });
-
+      sum = sum.filter(function(element) {
+        return element !== undefined;
+      });
       _store.angle = 90;
       // need to check if 'new' summed array
       // 2. is on the stage
       // 1. does not match a value that already exists
       // note if exists in current array transform value should be fine
-      moveCurrent(sum);
+      if (sum.length === 4) {
+        moveCurrent(sum);
+      }
       break;
     case 90:
       transformArray = _store.shapes[shape].transformations.oneeighty;
-      sum = currentShape.map(function(num, i) {
-        return num + transformArray[i];
+      // takes the current transform array and adds it to the current array
+      sum = currentShape.map(transformCurrentShapeOneEighty, {
+        shape: shape
+      });
+      // console.log(sum);
+      sum = sum.filter(function(element) {
+        return element !== undefined;
       });
       _store.angle = 180;
-      moveCurrent(sum);
-
+      // need to check if 'new' summed array
+      // 2. is on the stage
+      // 1. does not match a value that already exists
+      // note if exists in current array transform value should be fine
+      if (sum.length === 4) {
+        moveCurrent(sum);
+      }
       break;
     case 180:
       transformArray = _store.shapes[shape].transformations.twoseventy;
-      sum = currentShape.map(function(num, i) {
-        return num + transformArray[i];
+      // takes the current transform array and adds it to the current array
+      sum = currentShape.map(transformCurrentShapeTwoSeventy, {
+        shape: shape
+      });
+      // console.log(sum);
+      sum = sum.filter(function(element) {
+        return element !== undefined;
       });
       _store.angle = 270;
-      moveCurrent(sum);
-
+      // need to check if 'new' summed array
+      // 2. is on the stage
+      // 1. does not match a value that already exists
+      // note if exists in current array transform value should be fine
+      if (sum.length === 4) {
+        moveCurrent(sum);
+      }
       break;
     case 270:
       transformArray = _store.shapes[shape].transformations.threesixty;
-      sum = currentShape.map(function(num, i) {
-        return num + transformArray[i];
+      // takes the current transform array and adds it to the current array
+      sum = currentShape.map(transformCurrentShapeThreeSixty, {
+        shape: shape
+      });
+      // console.log(sum);
+      sum = sum.filter(function(element) {
+        return element !== undefined;
       });
       _store.angle = 0;
-      moveCurrent(sum);
-
+      // need to check if 'new' summed array
+      // 2. is on the stage
+      // 1. does not match a value that already exists
+      // note if exists in current array transform value should be fine
+      if (sum.length === 4) {
+        moveCurrent(sum);
+      }
 
       break;
     default:
@@ -304,26 +339,98 @@ function turnClockwise() {
 
 /*
  * Accepts an number and transforms this based on its shape and position
- * also assept @param shape
+ * also accept @param shape
  */
 function transformCurrentShapeNinety(num, i, array) {
   let shape = this.shape;
-
   // let currentShape = array;
   let transformArray = _store.shapes[shape].transformations.ninety;
   // here we can check if transformed array is valid?
   let newNumber = num + transformArray[i];
-  console.log(newNumber)
-
   // if new number is the same as an existiong current item  return new number is
   if (_store.currentItem.includes(newNumber)) {
     return newNumber;
-
+  } else if (_store.grid[newNumber] === 1) {
+    console.log('not', newNumber);
+    return;
+  } else if (newNumber > (_store.columns * _store.rows)) {
+    console.log('not > max', newNumber);
+    return;
   } else {
-    //ch
-    //check does not hit sides / other blocks
-    // if existing shape has 3 or more elements that are in the first column, return
+    return newNumber;
+  }
+}
 
+/*
+ * Accepts an number and transforms this based on its shape and position
+ * also accept @param shape
+ */
+function transformCurrentShapeOneEighty(num, i, array) {
+  let shape = this.shape;
+  // let currentShape = array;
+  let transformArray = _store.shapes[shape].transformations.oneeighty;
+  // here we can check if transformed array is valid?
+  let newNumber = num + transformArray[i];
+  // if new number is the same as an existiong current item return new number is
+  if (_store.currentItem.includes(newNumber)) {
+    return newNumber;
+  } else if (_store.grid[newNumber] === 1) {
+    console.log('not', newNumber);
+    return;
+  } else if (newNumber > (_store.columns * _store.rows)) {
+    console.log('not > max', newNumber);
+    return;
+  } else {
+    return newNumber;
+  }
+}
+
+
+/*
+ * Accepts an number and transforms this based on its shape and position
+ * also accept @param shape
+ */
+function transformCurrentShapeTwoSeventy(num, i, array) {
+  let shape = this.shape;
+  // let currentShape = array;
+  let transformArray = _store.shapes[shape].transformations.twoseventy;
+  // here we can check if transformed array is valid?
+  let newNumber = num + transformArray[i];
+  // if new number is the same as an existiong current item  return new number is
+  if (_store.currentItem.includes(newNumber)) {
+    return newNumber;
+  } else if (_store.grid[newNumber] === 1) {
+    console.log('not', newNumber);
+    return;
+  } else if (newNumber > (_store.columns * _store.rows)) {
+    console.log('not > max', newNumber);
+    return;
+  } else {
+    return newNumber;
+  }
+}
+
+
+/*
+ * Accepts an number and transforms this based on its shape and position
+ * also accept @param shape
+ */
+function transformCurrentShapeThreeSixty(num, i, array) {
+  let shape = this.shape;
+  // let currentShape = array;
+  let transformArray = _store.shapes[shape].transformations.threesixty;
+  // here we can check if transformed array is valid?
+  let newNumber = num + transformArray[i];
+  // if new number is the same as an existiong current item  return new number is
+  if (_store.currentItem.includes(newNumber)) {
+    return newNumber;
+  } else if (_store.grid[newNumber] === 1) {
+    console.log('not', newNumber);
+    return;
+  } else if (newNumber > (_store.columns * _store.rows)) {
+    console.log('not > max', newNumber);
+    return;
+  } else {
     return newNumber;
   }
 }
