@@ -521,11 +521,13 @@ function updatePaintShape(currentItem) {
  */
 function unPaintShape(currentItem) {
   currentItem.forEach(unPaintShapeItem)
-
 }
 
 function unPaintShapeItem(item, index, arr) {
-  paintItem(_store.grid, item, 0);
+  // make sure item is positive
+  if (item >= 0) {
+    paintItem(_store.grid, item, 0);
+  }
 }
 
 /**
@@ -622,6 +624,87 @@ function moveDown() {
       dropNext();
     }
   }
+}
+
+
+/*
+ * moves the _store.currentItem down one
+ */
+function dropDownOne() {
+  // if (currentArray.length === 4) {
+  // let initialCurrentLength = _store.currentItem.length;
+  //sort in reverse numerical order
+  let sortedCurrentItem = _store.currentItem.sort(function(a, b) { return b - a });
+  // let tempCurrent = sortedCurrentItem.map(addGravity);
+  //remove items where value is undefined
+  // tempCurrent = tempCurrent.filter(function(element) {
+  //   return element !== undefined;
+  // });
+  let tempCurrent = sortedCurrentItem;
+
+
+  for (let i = 0; i <= _store.rows; i++) {
+    tempCurrent = tempCurrent.map(addGravity);
+    tempCurrent = tempCurrent.filter(function(element) {
+      return element !== undefined;
+    });
+    // console.log(tempCurrent);
+    if (tempCurrent.length === 4) {
+      moveCurrent(tempCurrent);
+    } else {
+      // dropNext();
+      return;
+    }
+  }
+
+}
+// if (tempCurrent.length === 4) {
+
+//   moveCurrent(tempCurrent);
+
+//   sortedCurrentItem = _store.currentItem.sort(function(a, b) { return b - a });
+//   tempCurrent = sortedCurrentItem.map(addGravity);
+//   //remove items where value is undefined
+//   tempCurrent = tempCurrent.filter(function(element) {
+//     return element !== undefined;
+//   });
+//   if (tempCurrent.length === 4) {
+//     moveCurrent(tempCurrent);
+//     // repeat until length < 4 at which point start agaain
+//   }
+// }
+
+// // }
+// }
+
+/*
+ * moves the _store.currentItem down one
+ */
+function dropDown() {
+
+  if (_store.currentItem.length === 4) {
+    dropDownOne();
+  } else {
+    dropNext();
+  }
+  // console.log('dropDown');
+  // if (_store.currentItem.length === 4) {
+  //   // let initialCurrentLength = _store.currentItem.length;
+  //   //sort in reverse numerical order
+  //   // _store.currentItem.sort(function(a, b) { return b - a });
+  //   // let tempCurrent = _store.currentItem.map(addGravity);
+  //   //remove items where value is undefined
+  //   // tempCurrent = tempCurrent.filter(function(element) {
+  //   //   return element !== undefined;
+  //   // });
+  //   // let tempCurrent = dropDownOne(tempCurrent);
+  //   console.log(tempCurrent);
+  //   if (_store.currentItem.length === 4) {
+  //     dropDownOne(tempCurrent);
+  //   } else {
+  //     dropNext();
+  //   }
+  // }
 }
 
 /*
@@ -840,10 +923,10 @@ function startTimerCallback() {
 function keyMap(key) {
   switch (key) {
     case 'Space':
-      moveDown();
+      dropDown();
       break;
     case 'ArrowDown':
-      moveDown();
+      dropDown();
       break;
     case 'ArrowUp':
       turnClockwise();
@@ -888,8 +971,8 @@ AppDispatcher.register((payload) => {
       break;
 
     case GridsterConstants.UPDATE_GRAVITY:
-      moveDown();
-
+      // moveDown();
+      dropDown();
       GridsterStore.emit(CHANGE_EVENT);
       break;
 
