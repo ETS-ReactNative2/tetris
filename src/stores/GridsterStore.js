@@ -719,6 +719,31 @@ function startTimerCallback() {
   }
 }
 
+/* 
+ * map keys to functions
+ */
+function keyMap(key) {
+  switch (key) {
+    case 'Space':
+      moveDown();
+      break;
+    case 'ArrowDown':
+      moveDown();
+      break;
+    case 'ArrowUp':
+      moveClockwise();
+      break;
+    case 'ArrowLeft':
+      moveLeft();
+      break;
+    case 'ArrowRight':
+      moveRight();
+      break;
+    default:
+      return;
+  }
+}
+
 // Register each of the actions with the dispatcher
 // by changing the store's data and emitting a
 // change
@@ -833,12 +858,21 @@ AppDispatcher.register((payload) => {
 
     case GridsterConstants.MOUSE_DOWN:
 
-      let downIndex = _store.grid.findIndex((obj => obj.id === parseInt(action.value, 10)));
+      // let downIndex = _store.grid.findIndex((obj => obj.id === parseInt(action.value, 10)));
 
-      _store.grid[downIndex].state = "down";
+      // _store.grid[downIndex].state = "down";
 
       GridsterStore.emit(CHANGE_EVENT);
       break;
+
+    case GridsterConstants.KEY_DOWN:
+      // console.log(action);
+
+      keyMap(action.key);
+
+      GridsterStore.emit(CHANGE_EVENT);
+      break;
+
 
     default:
       return;

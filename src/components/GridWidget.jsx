@@ -125,12 +125,16 @@ export default class GridWidget extends Component {
 
   _onKeyDown(e) {
     // console.log("key pressed", e);
-    console.log("key pressed", e.key);
+    // console.log("key pressed", e.key);
+    // console.log("key pressed", e);
+    // console.log("key pressed", e.code);
 
     // console.log("key pressed", e.charCode);
     // console.log("key pressed", e.keyCode);
 
-    keyDown();
+    keyDown(e.code);
+    // keyDown(e);
+
   }
 
   // onKeyPressed(e) {
