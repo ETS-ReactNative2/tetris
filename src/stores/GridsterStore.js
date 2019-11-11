@@ -206,17 +206,19 @@ function paintItem(items, i, item) {
  */
 // const removeItem = (items, i) =>
 //   items.slice(0, i - 1).concat(items.slice(i, items.length));
-
-function checkColumnZero(currentValue) {
+/*
+ * returns if valus is not in
+ */
+function checkOutsideColumn(currentValue) {
   if (currentValue % _store.columns !== 0 && (currentValue + 1) % _store.columns !== 0) {
     return currentValue;
   }
 }
 
 /*
- * returns the value if not in columnOne
+ * returns the value in not on the inset column i.e. the second and second last columns
  */
-function checkColumnOne(currentValue) {
+function checkColumnInset(currentValue) {
   if ((currentValue - 1) % _store.columns !== 0 && (currentValue + 2) % _store.columns !== 0) {
     return currentValue;
   }
@@ -225,24 +227,25 @@ function checkColumnOne(currentValue) {
 /*
  * moves the current item clockwise
  */
-function moveClockwise() {
+function turnClockwise() {
   let shape = _store.shape;
   let angle = _store.angle;
-  // let shapeName = _store.shapes[_store.shape].name;
+  // lets restrict movement if certain conditions
+  // sort curent shape low to high - transform matrix is always calculated form ther first item to the last
   let currentShape = _store.currentItem.sort(function(a, b) { return a - b });
-  let tempCurrent = currentShape.map(checkColumnOne);
-  // if current shape has 4 in column 1 return
-
+  let tempCurrent = currentShape.map(checkColumnInset);
+  // lets remove items that return undefined
   tempCurrent = tempCurrent.filter(function(element) {
     return element !== undefined;
   });
+  // if not a pipe in column 1 return
   if (tempCurrent.length <= 0) {
     return;
   }
-  //let also check if the shape has 3 elements near the side
+  // We also check if the shape has 3 elements in the first column
   // if current shape has 3 or more items that are in column 0 return
-
-  tempCurrent = currentShape.map(checkColumnZero);
+  tempCurrent = currentShape.map(checkOutsideColumn);
+  // remeber all shapes have 4 items
   tempCurrent = tempCurrent.filter(function(element) {
     return element !== undefined;
   });
@@ -310,9 +313,14 @@ function transformCurrentShapeNinety(num, i, array) {
   let transformArray = _store.shapes[shape].transformations.ninety;
   // here we can check if transformed array is valid?
   let newNumber = num + transformArray[i];
+  console.log(newNumber)
+
+  // if new number is the same as an existiong current item  return new number is
   if (_store.currentItem.includes(newNumber)) {
     return newNumber;
+
   } else {
+    //ch
     //check does not hit sides / other blocks
     // if existing shape has 3 or more elements that are in the first column, return
 
@@ -321,10 +329,13 @@ function transformCurrentShapeNinety(num, i, array) {
 }
 
 /*
- * returns a random shape from shape setting
+ * returns a random number depending on the amount of items in the _store.shapes array
+ * stores random number that represents the index of teh shape in the _store.shape field
  */
-function chooseRandom() {
-  let randShape = Math.floor((Math.random() * _store.shapes.length))
+function chooseRandomShape() {
+  let randShape = Math.floor((Math.random() * _store.shapes.length));
+  _store.shape = randShape;
+  _store.angle = 0;
   return randShape;
 }
 
@@ -390,7 +401,8 @@ function updatePaintShape(currentItem) {
 
   function updatePaintShapeItem(item, index, arr) {
     let limit = _store.columns * _store.rows;
-    if (item < limit) {
+    let lowerLimit = 0;
+    if (item < limit && item >= lowerLimit) {
       paintItem(_store.grid, item, 1);
     }
   }
@@ -403,10 +415,10 @@ function updatePaintShape(currentItem) {
 function unPaintShape(currentItem) {
   currentItem.forEach(unPaintShapeItem)
 
-  function unPaintShapeItem(item, index, arr) {
-    paintItem(_store.grid, item, 0);
-  }
+}
 
+function unPaintShapeItem(item, index, arr) {
+  paintItem(_store.grid, item, 0);
 }
 
 /**
@@ -417,7 +429,7 @@ function moveLeft() {
   if (_store.currentItem.length !== 0) {
     let initialCurrentLength = _store.currentItem.length;
     let sortedCurrentItem = _store.currentItem.sort(function(a, b) { return b - a });
-    let tempCurrent = sortedCurrentItem.map(addLeft);
+    let tempCurrent = sortedCurrentItem.map(moveLeftCurrent);
     tempCurrent = tempCurrent.filter(function(element) {
       return element !== undefined;
     });
@@ -442,7 +454,7 @@ function moveRight() {
   if (_store.currentItem.length !== 0) {
     let initialCurrentLength = _store.currentItem.length;
     let sortedCurrentItem = _store.currentItem.sort(function(a, b) { return b - a });
-    let tempCurrent = sortedCurrentItem.map(addRight);
+    let tempCurrent = sortedCurrentItem.map(moveRightCurrent);
     //remove items where value is undefined
     tempCurrent = tempCurrent.filter(function(element) {
       return element !== undefined;
@@ -525,9 +537,7 @@ function dropNext() {
   //check for filled rows
   checkRows();
   //choose random shape
-  let randShape = chooseRandom();
-  _store.shape = randShape;
-  _store.angle = 0;
+  let randShape = chooseRandomShape();
   paintShape(randShape);
 }
 
@@ -603,8 +613,8 @@ function addGravity(item, index, arr) {
  * item - should match the index in the stage
  * used by map to add increase each item so that it moves down one row
  */
-function addLeft(item, index, arr) {
-  // yes so if current shape has an item that is (index) % number_columns == 0
+function moveLeftCurrent(item, index, arr) {
+  // if current shape has an item that is (index) % number_columns == 0
   // then we cannot move left
   //e.g. 0 1 2 3 4 5 6 7 8 9
   //     10 11 12 13 14 15 16 17 18 19 20
@@ -634,7 +644,7 @@ function addLeft(item, index, arr) {
  * item - should match the index in the stage
  * used by map to add increase each item so that it moves across one column
  */
-function addRight(item, index, arr) {
+function moveRightCurrent(item, index, arr) {
   if (_store.currentItem.includes(item + 1)) {
     return item = item + 1;
   } else {
@@ -659,9 +669,7 @@ function addRight(item, index, arr) {
 function startGame() {
   clearGrid();
   //clear the grid here
-  let randShape = chooseRandom();
-  _store.shape = randShape;
-  _store.angle = 0;
+  let randShape = chooseRandomShape();
   setInitialInterval();
   paintShape(randShape);
   _store.state = 1;
@@ -719,7 +727,7 @@ function startTimerCallback() {
   }
 }
 
-/* 
+/*
  * map keys to functions
  */
 function keyMap(key) {
@@ -731,7 +739,7 @@ function keyMap(key) {
       moveDown();
       break;
     case 'ArrowUp':
-      moveClockwise();
+      turnClockwise();
       break;
     case 'ArrowLeft':
       moveLeft();
@@ -792,7 +800,7 @@ AppDispatcher.register((payload) => {
 
     case GridsterConstants.MOVE_CLOCKWISE:
       // call function to update store here = add 10 cells to beginning - remove 10 cells at the end
-      moveClockwise();
+      turnClockwise();
       GridsterStore.emit(CHANGE_EVENT);
       break;
 
