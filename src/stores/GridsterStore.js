@@ -233,7 +233,7 @@ function turnClockwise() {
   // lets restrict movement if certain conditions
   // sort curent shape low to high - transform matrix is always calculated form ther first item to the last
   let currentShape = _store.currentItem.sort(function(a, b) { return a - b });
-  console.log(currentShape);
+  // console.log(currentShape);
   let tempCurrent = currentShape.map(checkColumnInset);
   // lets remove items that return undefined
   tempCurrent = tempCurrent.filter(function(element) {
@@ -256,7 +256,7 @@ function turnClockwise() {
 
   switch (angle) {
     case 0:
-      let transformArray = _store.shapes[shape].transformations.ninety;
+      // let transformArray = _store.shapes[shape].transformations.ninety;
       // takes the current transform array and adds it to the current array
       let sum = currentShape.map(transformCurrentShapeNinety, {
         shape: shape
@@ -274,7 +274,7 @@ function turnClockwise() {
       }
       break;
     case 90:
-      transformArray = _store.shapes[shape].transformations.oneeighty;
+      // transformArray = _store.shapes[shape].transformations.oneeighty;
       // takes the current transform array and adds it to the current array
       sum = currentShape.map(transformCurrentShapeOneEighty, {
         shape: shape
@@ -293,7 +293,7 @@ function turnClockwise() {
       }
       break;
     case 180:
-      transformArray = _store.shapes[shape].transformations.twoseventy;
+      // transformArray = _store.shapes[shape].transformations.twoseventy;
       // takes the current transform array and adds it to the current array
       sum = currentShape.map(transformCurrentShapeTwoSeventy, {
         shape: shape
@@ -312,7 +312,7 @@ function turnClockwise() {
       }
       break;
     case 270:
-      transformArray = _store.shapes[shape].transformations.threesixty;
+      // transformArray = _store.shapes[shape].transformations.threesixty;
       // takes the current transform array and adds it to the current array
       sum = currentShape.map(transformCurrentShapeThreeSixty, {
         shape: shape
@@ -351,10 +351,10 @@ function transformCurrentShapeNinety(num, i, array) {
   if (_store.currentItem.includes(newNumber)) {
     return newNumber;
   } else if (_store.grid[newNumber] === 1) {
-    console.log('not', newNumber);
+    // console.log('not', newNumber);
     return;
   } else if (newNumber > (_store.columns * _store.rows)) {
-    console.log('not > max', newNumber);
+    // console.log('not > max', newNumber);
     return;
   } else {
     return newNumber;
@@ -375,10 +375,10 @@ function transformCurrentShapeOneEighty(num, i, array) {
   if (_store.currentItem.includes(newNumber)) {
     return newNumber;
   } else if (_store.grid[newNumber] === 1) {
-    console.log('not', newNumber);
+    // console.log('not', newNumber);
     return;
   } else if (newNumber > (_store.columns * _store.rows)) {
-    console.log('not > max', newNumber);
+    // console.log('not > max', newNumber);
     return;
   } else {
     return newNumber;
@@ -400,10 +400,10 @@ function transformCurrentShapeTwoSeventy(num, i, array) {
   if (_store.currentItem.includes(newNumber)) {
     return newNumber;
   } else if (_store.grid[newNumber] === 1) {
-    console.log('not', newNumber);
+    // console.log('not', newNumber);
     return;
   } else if (newNumber > (_store.columns * _store.rows)) {
-    console.log('not > max', newNumber);
+    // console.log('not > max', newNumber);
     return;
   } else {
     return newNumber;
@@ -425,10 +425,10 @@ function transformCurrentShapeThreeSixty(num, i, array) {
   if (_store.currentItem.includes(newNumber)) {
     return newNumber;
   } else if (_store.grid[newNumber] === 1) {
-    console.log('not', newNumber);
+    // console.log('not', newNumber);
     return;
   } else if (newNumber > (_store.columns * _store.rows)) {
-    console.log('not > max', newNumber);
+    // console.log('not > max', newNumber);
     return;
   } else {
     return newNumber;
