@@ -765,6 +765,7 @@ function checkRows() {
       _store.grid.splice(tempLength2 - ((_store.columns * i) + _store.columns), _store.columns);
       addTop();
       decreaseInterval();
+      //not sure why we have to start timer again?! after decreasiong interval in order for speed to decrease
       startTimer();
       // not always removing multiple rows ?
     }
@@ -857,12 +858,26 @@ function moveRightCurrent(item, index, arr) {
  * starts game and sets state of game to 1
  */
 function startGame() {
+  // console.log('startt')
   clearGrid();
+
   //clear the grid here
-  let randShape = chooseRandomShape();
-  setInitialInterval();
-  paintShape(randShape);
   _store.state = 1;
+  // console.log('_store')
+
+  // console.log(_store);
+  // console.log(_store.interval);
+  // _store.interval = 1000;
+  setInitialInterval();
+  // startTimer();
+
+  // startTimer();
+  // console.log(_store.interval);
+
+  let randShape = chooseRandomShape();
+
+  // gameInterval = window.setInterval(startTimerCallback, _store.interval);
+  paintShape(randShape);
 }
 
 /*
@@ -876,7 +891,11 @@ function clearGrid() {
  * stop game
  */
 function stopGame() {
+  // console.log('stop')
+
   _store.state = 0;
+  // console.log('_store', _store);
+
 }
 
 /*
@@ -893,7 +912,13 @@ function decreaseInterval() {
  */
 function setInitialInterval() {
   _store.interval = 1000;
-  clearInterval(gameInterval);
+  if (_store.timer > 0) {
+    clearInterval(gameInterval);
+    // GridsterStore.emit(CHANGE_EVENT);
+
+  }
+  // console.log(gameInterval);
+  // clearInterval(gameInterval);
 }
 
 //declare in global scope
@@ -999,9 +1024,10 @@ AppDispatcher.register((payload) => {
     case GridsterConstants.START_GAME:
       // call function to update store here = add 10 cells to beginning - remove 10 cells at the end
       startGame();
-      if (_store.timer === 0) {
-        startTimer();
-      }
+      startTimer();
+
+      // if (_store.timer === 0) {
+      // }
 
       GridsterStore.emit(CHANGE_EVENT);
       break;
