@@ -884,6 +884,7 @@ function stopGame() {
  */
 function decreaseInterval() {
   _store.interval = _store.interval - (_store.interval * .1);
+  // clear on window object
   clearInterval(gameInterval);
 }
 
@@ -892,6 +893,7 @@ function decreaseInterval() {
  */
 function setInitialInterval() {
   _store.interval = 1000;
+  clearInterval(gameInterval);
 }
 
 //declare in global scope
