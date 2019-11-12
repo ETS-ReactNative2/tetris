@@ -104,3 +104,9 @@ export function keyDown(key) {
     key: key
   });
 }
+
+export function loadLocalStorage() {
+  AppDispatcher.handleViewAction({
+    actionType: GridsterConstants.LOCAL_STORAGE
+  });
+}

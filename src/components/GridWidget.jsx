@@ -4,14 +4,7 @@ import GridsterStore from '../stores/GridsterStore.js';
 import Button from './Button';
 // import Input from './Input';
 import Grid from './Grid';
-import { updateRow, updateColumn, generateGrid, generateStart, generateEnd, updateGravity, moveClockwise, startGame, moveRight, moveLeft, keyDown} from '../actions/GridsterActions.js';
-
-// const spanStyle = {
-//   marginRight: '1rem',
-//   marginTop: '1.2rem',
-//   float: 'left'
-// }
-
+import { updateRow, updateColumn, generateGrid, generateStart, generateEnd, updateGravity, moveClockwise, startGame, moveRight, moveLeft, keyDown, loadLocalStorage} from '../actions/GridsterActions.js';
 
 function inputValidation(value) {
   //check for number input
@@ -40,12 +33,13 @@ export default class GridWidget extends Component {
     this._onKeyDown = this._onKeyDown.bind(this);
     this.state = {
       columns: 10,
-      rows: 16,
+      rows: 20,
       grid: [],
       timerOn: false,
       timerStart: 0,
       timerTime: 0
     };
+    loadLocalStorage();
     document.addEventListener("keydown", this._onKeyDown.bind(this));
     window.addEventListener("keydown", function(e) {
       // space and arrow keys
@@ -118,32 +112,12 @@ export default class GridWidget extends Component {
   }
 
   _startGame() {
-    // startTimer();
-    // console.log(this.state);
     startGame();
   }
 
   _onKeyDown(e) {
-    // console.log("key pressed", e);
-    // console.log("key pressed", e.key);
-    // console.log("key pressed", e);
-    // console.log("key pressed", e.code);
-
-    // console.log("key pressed", e.charCode);
-    // console.log("key pressed", e.keyCode);
-
     keyDown(e.code);
-    // keyDown(e);
-
   }
-
-  // onKeyPressed(e) {
-  //   console.log("e pressed", e);
-  //   console.log("key pressed", e.key);
-  //   console.log("charCode pressed", e.charCode);
-  //   console.log("keyCode pressed", e.keyCode);
-  //   keyDown();
-  // }
 
   render() {
     const enabled = this.state.state < 1;

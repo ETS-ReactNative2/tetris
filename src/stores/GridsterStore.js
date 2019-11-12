@@ -763,6 +763,8 @@ function checkRows() {
       _store.score = _store.score + 10;
       if (_store.score > _store.highScore) {
         _store.highScore = _store.score;
+        localStorage.setItem('highScore', _store.highScore);
+
         console.log('new high score');
       }
       let tempLength2 = _store.grid.length;
@@ -882,6 +884,14 @@ function clearGrid() {
 }
 
 /*
+ * load local storage including high score
+ */
+function loadLocalStorage() {
+  _store.highScore = localStorage.getItem('highScore') || '0';
+}
+
+
+/*
  * stop game
  */
 function stopGame() {
@@ -921,7 +931,6 @@ var gameInterval;
 function startTimer() {
   gameInterval = window.setInterval(startTimerCallback, _store.interval);
 }
-
 
 /*
  * start timer calback
@@ -1087,6 +1096,14 @@ AppDispatcher.register((payload) => {
       // console.log(action);
 
       keyMap(action.key);
+
+      GridsterStore.emit(CHANGE_EVENT);
+      break;
+
+    case GridsterConstants.LOCAL_STORAGE:
+      // console.log(action);
+
+      loadLocalStorage();
 
       GridsterStore.emit(CHANGE_EVENT);
       break;
