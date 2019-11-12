@@ -150,7 +150,8 @@ export default class GridWidget extends Component {
     return (
       <div className="container" >
         <div className="inner-container" >
-          <span className="score">Score: {this.state.score}</span>
+          <span className="score">Score: {this.state.score} </span>
+          <span className="score--high">High Score: {this.state.highScore}</span>
           <form >
             <Button text="Left" onclick={this._onLeft} />
             <Button text="Right" onclick={this._onRight} />
@@ -160,7 +161,6 @@ export default class GridWidget extends Component {
           </form>
         </div>
         <div className="inner-container" >
-          {/* <span>{this.state.interval}</span> */}
           <Grid
             grid={this.state.grid} columns="10" rows="15"
           />

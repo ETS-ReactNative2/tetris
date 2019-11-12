@@ -160,6 +160,7 @@ let _store = {
   shape: null,
   score: 0,
   interval: 1000,
+  highScore: 0,
 };
 
 // Define the public event listeners and getters that
@@ -760,7 +761,10 @@ function checkRows() {
      */
     if (count === 10) {
       _store.score = _store.score + 10;
-
+      if (_store.score > _store.highScore) {
+        _store.highScore = _store.score;
+        console.log('new high score');
+      }
       let tempLength2 = _store.grid.length;
       _store.grid.splice(tempLength2 - ((_store.columns * i) + _store.columns), _store.columns);
       addTop();
@@ -858,25 +862,15 @@ function moveRightCurrent(item, index, arr) {
  * starts game and sets state of game to 1
  */
 function startGame() {
-  // console.log('startt')
-  clearGrid();
-
   //clear the grid here
+  clearGrid();
+  //reset the score
+  _store.score = 0;
+  //start the game
   _store.state = 1;
-  // console.log('_store')
-
-  // console.log(_store);
-  // console.log(_store.interval);
-  // _store.interval = 1000;
+  // reset the interval
   setInitialInterval();
-  // startTimer();
-
-  // startTimer();
-  // console.log(_store.interval);
-
   let randShape = chooseRandomShape();
-
-  // gameInterval = window.setInterval(startTimerCallback, _store.interval);
   paintShape(randShape);
 }
 
@@ -891,11 +885,13 @@ function clearGrid() {
  * stop game
  */
 function stopGame() {
-  // console.log('stop')
-
+  // if (_store.highscore < _store.state) {
+  //   // _store.highscore = _store.state;
+  //   console.log('new high score');
+  // }
   _store.state = 0;
-  // console.log('_store', _store);
 
+  console.log('stop game');
 }
 
 /*
@@ -914,11 +910,7 @@ function setInitialInterval() {
   _store.interval = 1000;
   if (_store.timer > 0) {
     clearInterval(gameInterval);
-    // GridsterStore.emit(CHANGE_EVENT);
-
   }
-  // console.log(gameInterval);
-  // clearInterval(gameInterval);
 }
 
 //declare in global scope
