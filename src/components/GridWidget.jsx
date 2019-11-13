@@ -126,15 +126,18 @@ export default class GridWidget extends Component {
         <div className="inner-container" >
           <span className="score">Score: {this.state.score} </span>
           <span className="score--high">High Score: {this.state.highScore}</span>
-          <form >
+          <form className="form-container">
             <Button text="Left" onclick={this._onLeft} />
             <Button text="Right" onclick={this._onRight} />
             <Button text="Down" onclick={this._onGravity} />
             <Button text="Rotate" onclick={this._onRotate} />
             <Button text="Start" disabled={!enabled} onclick={this._startGame} />
+
           </form>
         </div>
         <div className="inner-container" >
+        <span>{this.state.audioUnlocked ? 'unlocked' : 'locked'}</span>
+
           <Grid
             grid={this.state.grid} columns="10" rows="15"
           />

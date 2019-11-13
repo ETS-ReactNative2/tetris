@@ -1,8 +1,10 @@
-
 html {
   box-sizing: border-box;
 }
-*, *:before, *:after {
+
+*,
+*:before,
+*:after {
   box-sizing: inherit;
 }
 
@@ -32,8 +34,12 @@ html {
 }
 
 @keyframes App-logo-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .App-logo {
@@ -54,4 +60,12 @@ html {
 
 .inner-container:first-child {
   padding: 1rem;
+}
+
+.score--high {
+  float: right;
+}
+
+.form-container {
+  padding-top: 1rem;
 }

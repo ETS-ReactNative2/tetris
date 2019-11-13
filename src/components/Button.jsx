@@ -50,14 +50,14 @@ export default class Button extends Component {
           onClick={this.props.onclick}
           disabled={this.props.disabled}
           style={{
-              marginLeft: '.4rem',
+              // marginLeft: '.4rem',
               borderRadius: '.4rem',
               border: 'solid 1px #ccc',
               padding: '0.4rem 1rem',
               color: 'white',
               fontSize: '1rem',
-              margin: '0 1rem',
-              marginTop: '13px',
+              // margin: '0 1rem',
+              // marginTop: '13px',
               cursor: 'pointer',
               background: itemColour}}>
           {this.props.text}

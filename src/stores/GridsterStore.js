@@ -5,7 +5,17 @@ import AppDispatcher from '../dispatcher/AppDispatcher';
 import { GridsterConstants } from '../constants/GridsterConstants.js';
 import { EventEmitter } from 'events';
 import { StartGrid } from './StartGrid';
-EventEmitter.prototype._maxListeners = 400;
+// import '../webkitAudioContextMonkeyPatch';
+import { AudioContext, OfflineAudioContext } from 'standardized-audio-context';
+
+// console.log(window.AudioContext);
+// import MIDISounds from 'midi-sounds-react';
+
+
+// console.log(MIDISounds);
+// const test = new MIDISounds;
+
+// EventEmitter.prototype._maxListeners = 400;
 
 const CHANGE_EVENT = 'change';
 
@@ -161,6 +171,7 @@ let _store = {
   score: 0,
   interval: 1000,
   highScore: 0,
+  audioUnlocked: false,
 };
 
 // Define the public event listeners and getters that
@@ -185,6 +196,113 @@ class GridsterStoreClass extends EventEmitter {
 // Initialize the singleton to register with the
 // dispatcher and export for React components
 const GridsterStore = new GridsterStoreClass();
+// console.log(AudioContext());
+// window.AudioContext
+// console.log(window.AudioContext());
+// var constructor = window.AudioContext || window.webkitAudioContext;
+// const AudioContext = window.AudioContext || window.webkitAudioContext;
+// const AudioContext = new(window.AudioContext || window.webkitAudioContext)();
+// var AudioContext = window.AudioContext;
+
+// var audioCtx = new AudioContext();
+const audioCtx = new(window.AudioContext);
+var oscillatorNode;
+// var gainNode;
+// console.log(audioContext);
+// var src;
+// var gain;
+// var real = new Float32Array([0, 0.4, 0.4, 1, 1, 1, 0.3, 0.7, 0.6, 0.5, 0.9, 0.8]);
+// var imag = new Float32Array(real.length);
+// var hornTable = audioCtx.createPeriodicWave(real, imag);
+var isUnlocked = false;
+var buffer;
+var source;
+
+function unlock() {
+
+  // if (isIOS || this.unlocked)
+  //   return;
+
+  // create empty buffer and play it
+  buffer = audioCtx.createBuffer(1, 1, 22050);
+  source = audioCtx.createBufferSource();
+  source.buffer = buffer;
+  source.connect(audioCtx.destination);
+  // source.noteOn(0);
+  source.start(0);
+  console.log(source.playbackState);
+  console.log(source.PLAYING_STATE);
+  console.log(source.FINISHED_STATE);
+
+  // by checking the play state after some time, we know if we're really unlocked
+  setTimeout(function() {
+    if ((source.playbackState === source.PLAYING_STATE || source.playbackState === source.FINISHED_STATE)) {
+      _store.audioUnlocked = true;
+    }
+  }, 0);
+
+}
+// console.log(audioContext);
+function play() {
+  // console.log('play');
+  // console.log(audioContext);
+  // unlock();
+
+  // option 1
+  // oscillatorNode = audioCtx.createOscillator();
+  // oscillatorNode.frequency.value = 440;
+  // oscillatorNode.type = 'sine';
+  // oscillatorNode.connect(audioCtx.destination);
+  // oscillatorNode.start(0);
+
+  // alt buffer
+  buffer = audioCtx.createBuffer(1, 1, 22050);
+  source = audioCtx.createBufferSource();
+  source.buffer = buffer;
+  source.connect(audioCtx.destination);
+  source.start(0);
+  setTimeout(function() {
+    if ((source.playbackState === source.PLAYING_STATE || source.playbackState === source.FINISHED_STATE)) {
+      _store.audioUnlocked = true;
+    }
+  }, 0);
+  // src = audioCtx.createBufferSource();
+  // src.buffer = 'someBuffer';
+  // gain = audioCtx.createGain();
+  // src.connect(gain);
+  // gain.gain.value = 0.5;
+  // gain.connect(audioCtx.destination);
+  // src.start(0);
+  // oscillatorNode.noteOn(0);
+
+  console.log(source.playbackState);
+  console.log(source.PLAYING_STATE);
+  console.log(source.FINISHED_STATE);
+
+
+  setTimeout(function() {
+    source.disconnect();
+  }, 1000);
+
+  // console.log(oscillatorNode.playbackState);
+  // console.log(oscillatorNode.PLAYING_STATE);
+  // console.log(oscillatorNode.FINISHED_STATE);
+
+  // console.log(oscillatorNode);
+  // console.log(osc.start);
+  // console.log(osc);
+  // gainNode = audioCtx.createGain();
+  // gainNode.gain.setTargetAtTime(0.0, 10.0, 1.0);
+  // console.log(gainNode);
+  // gainNode.connect(audioCtx.destination);
+  // gainNode.start(1);
+}
+
+// function stop() {
+//   osc = window.audioContext.createOscillator();
+
+//   osc.disconnect();
+// }
 
 function xcoord(number) {
   return (1 + ((number % _store.columns)));
@@ -201,6 +319,13 @@ function paintItem(items, i, item) {
   items.splice(i, 1, item);
   return items;
 }
+
+// function playTestInstrument() {
+//   // playChordNow(instrument, pitches, duration)
+//   // this.midiSounds.playChordNow(608, [60], 2.5);
+//   //looads array of drums
+//   // mSounds.playDrumsNow([0]);
+// }
 
 /*
  * accepts a an item from and array of @items representing the grid or stage and paints an @item (0) using the index i
@@ -769,6 +894,8 @@ function checkRows() {
       }
       let tempLength2 = _store.grid.length;
       _store.grid.splice(tempLength2 - ((_store.columns * i) + _store.columns), _store.columns);
+      // playTestInstrument();
+      play();
       addTop();
       decreaseInterval();
       //not sure why we have to start timer again?! after decreasiong interval in order for speed to decrease
@@ -1026,9 +1153,6 @@ AppDispatcher.register((payload) => {
       // call function to update store here = add 10 cells to beginning - remove 10 cells at the end
       startGame();
       startTimer();
-
-      // if (_store.timer === 0) {
-      // }
 
       GridsterStore.emit(CHANGE_EVENT);
       break;
