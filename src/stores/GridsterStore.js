@@ -6,7 +6,7 @@ import { GridsterConstants } from '../constants/GridsterConstants.js';
 import { EventEmitter } from 'events';
 import { StartGrid } from './StartGrid';
 // import '../webkitAudioContextMonkeyPatch';
-import { AudioContext, OfflineAudioContext } from 'standardized-audio-context';
+import { AudioContext, OfflineAudioContext, OscillatorNode } from 'standardized-audio-context';
 
 // console.log(window.AudioContext);
 // import MIDISounds from 'midi-sounds-react';
@@ -205,8 +205,11 @@ const GridsterStore = new GridsterStoreClass();
 // var AudioContext = window.AudioContext;
 
 // var audioCtx = new AudioContext();
-const audioCtx = new(window.AudioContext);
-var oscillatorNode;
+// const audioCtx = new AudioContext();
+// var oscillatorNode;
+// const oscillatorNode = audioCtx.createOscillator();
+// const oscillatorNode = new OscillatorNode(audioCtx);
+
 // var gainNode;
 // console.log(audioContext);
 // var src;
@@ -217,36 +220,25 @@ var oscillatorNode;
 var isUnlocked = false;
 var buffer;
 var source;
-
-function unlock() {
-
-  // if (isIOS || this.unlocked)
-  //   return;
-
-  // create empty buffer and play it
-  buffer = audioCtx.createBuffer(1, 1, 22050);
-  source = audioCtx.createBufferSource();
-  source.buffer = buffer;
-  source.connect(audioCtx.destination);
-  // source.noteOn(0);
-  source.start(0);
-  console.log(source.playbackState);
-  console.log(source.PLAYING_STATE);
-  console.log(source.FINISHED_STATE);
-
-  // by checking the play state after some time, we know if we're really unlocked
-  setTimeout(function() {
-    if ((source.playbackState === source.PLAYING_STATE || source.playbackState === source.FINISHED_STATE)) {
-      _store.audioUnlocked = true;
-    }
-  }, 0);
-
-}
+// var gainNode = audioCtx.createGain();
 // console.log(audioContext);
+// console.log(navigator);
+
+const audioCtx = new AudioContext();
+const gainNode = audioCtx.createGain();
+
+
+// create Oscillator and gain node
+const oscillator = audioCtx.createOscillator();
+var enabled = false;
+
 function play() {
+
   // console.log('play');
   // console.log(audioContext);
   // unlock();
+  // gainNode.gain.value = 0.5;
+  // gainNode.gain.setValueAtTime(1, audioCtx.currentTime);
 
   // option 1
   // oscillatorNode = audioCtx.createOscillator();
@@ -256,47 +248,122 @@ function play() {
   // oscillatorNode.start(0);
 
   // alt buffer
-  buffer = audioCtx.createBuffer(1, 1, 22050);
-  source = audioCtx.createBufferSource();
-  source.buffer = buffer;
-  source.connect(audioCtx.destination);
-  source.start(0);
+  // buffer = audioCtx.createBuffer(1, 1, 22050);
+  // source = audioCtx.createBufferSource();
+  // source.buffer = buffer;
+  // source.connect(audioCtx.destination);
+  // source.start(0);
+  // setTimeout(function() {
+  //   if ((source.playbackState === source.PLAYING_STATE || source.playbackState === source.FINISHED_STATE)) {
+  //     _store.audioUnlocked = true;
+  //   }
+  // }, 0);
+
+
+  // console.log(source.playbackState);
+  // console.log(source.PLAYING_STATE);
+  // console.log(source.FINISHED_STATE);
+
+
+  // setTimeout(function() {
+  //   source.disconnect();
+  // }, 1000);
+
+  // const audioContext = new AudioContext();
+  // if (navigator.mediaDevices.getUserMedia) {
+  //   navigator.mediaDevices.getUserMedia(
+  //     // constraints - only audio needed for this app
+  //     {
+  //       audio: true
+  //     },
+
+  //     // Success callback
+  //     function(stream) {
+  //       source = audioCtx.createMediaStreamSource(stream);
+
+  //     },
+
+  //     // Error callback
+  //     function(err) {
+  //       console.log('The following gUM error occured: ' + err);
+  //     }
+  //   );
+  // } else {
+  //   console.log('getUserMedia not supported on your browser!');
+  // }
+  // attempt to mick event
+  // var e = document.createEvent('UIEvent');
+  // e.touches = [{ pageX: 100, pageY: 100 }];
+  // console.log(audioCtx);
+  console.log(audioCtx.state);
+
+  if (audioCtx.state === 'suspended' && enabled) {
+    console.log('suspended and enabled', audioCtx.state);
+    audioCtx.resume();
+
+  } else if (audioCtx.state === 'suspended') {
+    console.log('suspended', audioCtx.state);
+    oscillator.connect(gainNode);
+    oscillator.connect(audioCtx.destination);
+
+    oscillator.type = 'sine';
+    oscillator.frequency.value = 440;
+    oscillator.start();
+
+    gainNode.gain.value = 0.1;
+    enabled = true;
+  } else {
+    console.log('else', audioCtx.state);
+
+  }
+  // let audioCtx = new AudioContext();
+
+
+  // create Oscillator and gain node
+  // let oscillator = audioCtx.createOscillator();
+  // let oscillatorNode = new OscillatorNode(audioCtx);
+  // let gainNode = audioCtx.createGain();
+  // console.log(audioCtx.currentTime);
+
+  // oscillator.connect(gainNode);
+  // oscillator.connect(audioCtx.destination);
+
+  // oscillator.type = 'sine';
+  // oscillator.frequency.value = 440;
+  // oscillator.start();
+
+  // gainNode.gain.value = 0.1;
+
+
+  audioCtx.onstatechange = function() {
+    console.log(audioCtx.state);
+  }
+
   setTimeout(function() {
-    if ((source.playbackState === source.PLAYING_STATE || source.playbackState === source.FINISHED_STATE)) {
-      _store.audioUnlocked = true;
-    }
-  }, 0);
-  // src = audioCtx.createBufferSource();
-  // src.buffer = 'someBuffer';
-  // gain = audioCtx.createGain();
-  // src.connect(gain);
-  // gain.gain.value = 0.5;
-  // gain.connect(audioCtx.destination);
-  // src.start(0);
-  // oscillatorNode.noteOn(0);
+    // console.log(audioCtx.currentTime);
+    // gainNode.gain.setValueAtTime(0, audioCtx.currentTime + 1);
+    // oscillatorNode.disconnect(audioCtx.destination);
+    // gainNode.gain.value = 0;
+    audioCtx.suspend();
+    // gainNode.gain.value = 0;
 
-  console.log(source.playbackState);
-  console.log(source.PLAYING_STATE);
-  console.log(source.FINISHED_STATE);
-
-
-  setTimeout(function() {
-    source.disconnect();
+    // console.log(audioCtx.state);
   }, 1000);
-
-  // console.log(oscillatorNode.playbackState);
-  // console.log(oscillatorNode.PLAYING_STATE);
-  // console.log(oscillatorNode.FINISHED_STATE);
-
-  // console.log(oscillatorNode);
-  // console.log(osc.start);
-  // console.log(osc);
-  // gainNode = audioCtx.createGain();
-  // gainNode.gain.setTargetAtTime(0.0, 10.0, 1.0);
-  // console.log(gainNode);
-  // gainNode.connect(audioCtx.destination);
-  // gainNode.start(1);
 }
+
+// function voiceMute() {
+//   let audioCtx = new AudioContext();
+//   let gainNode = audioCtx.createGain();
+//   if (mute.id == "") {
+//     gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+//     mute.id = "activated";
+//     mute.innerHTML = "Unmute";
+//   } else {
+//     gainNode.gain.setValueAtTime(1, audioCtx.currentTime);
+//     mute.id = "";
+//     mute.innerHTML = "Mute";
+//   }
+// }
 
 // function stop() {
 //   osc = window.audioContext.createOscillator();
@@ -992,6 +1059,7 @@ function moveRightCurrent(item, index, arr) {
  */
 function startGame() {
   //clear the grid here
+  play();
   clearGrid();
   //reset the score
   _store.score = 0;

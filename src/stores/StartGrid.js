@@ -20,3 +20,5 @@ export const StartGrid = [
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 ];
+
+// let StartGrid = new Int16Array(200);
