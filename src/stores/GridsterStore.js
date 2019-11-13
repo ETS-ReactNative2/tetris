@@ -5,6 +5,8 @@ import AppDispatcher from '../dispatcher/AppDispatcher';
 import { GridsterConstants } from '../constants/GridsterConstants.js';
 import { EventEmitter } from 'events';
 import { StartGrid } from './StartGrid';
+import { OrganTables } from './OrganTables';
+
 // import '../webkitAudioContextMonkeyPatch';
 import { AudioContext, OfflineAudioContext, OscillatorNode } from 'standardized-audio-context';
 
@@ -227,10 +229,30 @@ var source;
 const audioCtx = new AudioContext();
 const gainNode = audioCtx.createGain();
 
+// Source: https://chromium.googlecode.com/svn/trunk/samples/audio/wave-tables/Organ_2
+var tables = OrganTables;
+
+const c = tables.real.length;
+var real = new Float32Array(c);
+var imag = new Float32Array(c);
+for (var i = 0; i < c; i++) {
+  real[i] = tables.real[i];
+  imag[i] = tables.imag[i];
+}
+
+// var hornTable = audioCtx.createPeriodicWave(real, imag);
+
+
 
 // create Oscillator and gain node
 const oscillator = audioCtx.createOscillator();
 var enabled = false;
+// const real = new Float32Array([0, 0.4, 0.4, 1, 1, 1, 0.3, 0.7, 0.6, 0.5, 0.9, 0.8]);
+// const imag = new Float32Array(real.length);
+// console.log(real, real.length, imag);
+const hornTable = audioCtx.createPeriodicWave(real, imag);
+console.log(hornTable);
+
 
 function play() {
 
@@ -306,11 +328,17 @@ function play() {
     oscillator.connect(gainNode);
     oscillator.connect(audioCtx.destination);
 
-    oscillator.type = 'sine';
-    oscillator.frequency.value = 440;
-    oscillator.start();
+    // oscillator.type = 'sine';
+    // oscillator.frequency.value = 440;
+    // oscillator.start();
 
-    gainNode.gain.value = 0.1;
+    oscillator.setPeriodicWave(hornTable);
+    oscillator.frequency.value = 160;
+    // oscillator.connect(audioCtx.destination);
+    oscillator.start(0);
+    // gainNode.gain.value = 0.1;
+
+    // run once
     enabled = true;
   } else {
     console.log('else', audioCtx.state);
