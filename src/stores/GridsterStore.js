@@ -6,9 +6,12 @@ import { GridsterConstants } from '../constants/GridsterConstants.js';
 import { EventEmitter } from 'events';
 import { StartGrid } from './StartGrid';
 import { OrganTables } from './OrganTables';
+import { DFT } from 'dsp.js';
 
 // import '../webkitAudioContextMonkeyPatch';
 import { AudioContext, OfflineAudioContext, OscillatorNode } from 'standardized-audio-context';
+// var dft = new DFT(1024, 44100);
+// console.log(dft);
 
 // console.log(window.AudioContext);
 // import MIDISounds from 'midi-sounds-react';
@@ -198,33 +201,10 @@ class GridsterStoreClass extends EventEmitter {
 // Initialize the singleton to register with the
 // dispatcher and export for React components
 const GridsterStore = new GridsterStoreClass();
-// console.log(AudioContext());
-// window.AudioContext
-// console.log(window.AudioContext());
-// var constructor = window.AudioContext || window.webkitAudioContext;
-// const AudioContext = window.AudioContext || window.webkitAudioContext;
-// const AudioContext = new(window.AudioContext || window.webkitAudioContext)();
-// var AudioContext = window.AudioContext;
 
-// var audioCtx = new AudioContext();
-// const audioCtx = new AudioContext();
-// var oscillatorNode;
-// const oscillatorNode = audioCtx.createOscillator();
-// const oscillatorNode = new OscillatorNode(audioCtx);
-
-// var gainNode;
-// console.log(audioContext);
-// var src;
-// var gain;
-// var real = new Float32Array([0, 0.4, 0.4, 1, 1, 1, 0.3, 0.7, 0.6, 0.5, 0.9, 0.8]);
-// var imag = new Float32Array(real.length);
-// var hornTable = audioCtx.createPeriodicWave(real, imag);
 var isUnlocked = false;
 var buffer;
 var source;
-// var gainNode = audioCtx.createGain();
-// console.log(audioContext);
-// console.log(navigator);
 
 const audioCtx = new AudioContext();
 const gainNode = audioCtx.createGain();
@@ -240,9 +220,29 @@ for (var i = 0; i < c; i++) {
   imag[i] = tables.imag[i];
 }
 
+// sharkfin shape
+function sharkFin(x) {
+  if (x < 0) return 0;
+  x = x * 2 % 2 + 0.05;
+  if (x < 1) {
+    return 1 + Math.log(x) / 4;
+  }
+  return Math.pow(-x, -2);
+}
+
+var count = 128;
+var sharkFinValues = new Array(count);
+for (var i = 0; i < count; i++) {
+  sharkFinValues[i] = sharkFin(i / count);
+}
+// console.log(sharkFinValues);
+
+// DFT
+var ft = new DFT(sharkFinValues.length);
+ft.forward(sharkFinValues);
+var lfoTable = audioCtx.createPeriodicWave(ft.real, ft.imag);
+var lfoGain = audioCtx.createGain();
 // var hornTable = audioCtx.createPeriodicWave(real, imag);
-
-
 
 // create Oscillator and gain node
 const oscillator = audioCtx.createOscillator();
@@ -251,91 +251,34 @@ var enabled = false;
 // const imag = new Float32Array(real.length);
 // console.log(real, real.length, imag);
 const hornTable = audioCtx.createPeriodicWave(real, imag);
-console.log(hornTable);
+// console.log(hornTable);
 
+var lfo = audioCtx.createOscillator();
+var lfoGain = audioCtx.createGain();
 
 function play() {
 
-  // console.log('play');
-  // console.log(audioContext);
-  // unlock();
-  // gainNode.gain.value = 0.5;
-  // gainNode.gain.setValueAtTime(1, audioCtx.currentTime);
-
-  // option 1
-  // oscillatorNode = audioCtx.createOscillator();
-  // oscillatorNode.frequency.value = 440;
-  // oscillatorNode.type = 'sine';
-  // oscillatorNode.connect(audioCtx.destination);
-  // oscillatorNode.start(0);
-
-  // alt buffer
-  // buffer = audioCtx.createBuffer(1, 1, 22050);
-  // source = audioCtx.createBufferSource();
-  // source.buffer = buffer;
-  // source.connect(audioCtx.destination);
-  // source.start(0);
-  // setTimeout(function() {
-  //   if ((source.playbackState === source.PLAYING_STATE || source.playbackState === source.FINISHED_STATE)) {
-  //     _store.audioUnlocked = true;
-  //   }
-  // }, 0);
-
-
-  // console.log(source.playbackState);
-  // console.log(source.PLAYING_STATE);
-  // console.log(source.FINISHED_STATE);
-
-
-  // setTimeout(function() {
-  //   source.disconnect();
-  // }, 1000);
-
-  // const audioContext = new AudioContext();
-  // if (navigator.mediaDevices.getUserMedia) {
-  //   navigator.mediaDevices.getUserMedia(
-  //     // constraints - only audio needed for this app
-  //     {
-  //       audio: true
-  //     },
-
-  //     // Success callback
-  //     function(stream) {
-  //       source = audioCtx.createMediaStreamSource(stream);
-
-  //     },
-
-  //     // Error callback
-  //     function(err) {
-  //       console.log('The following gUM error occured: ' + err);
-  //     }
-  //   );
-  // } else {
-  //   console.log('getUserMedia not supported on your browser!');
-  // }
-  // attempt to mick event
-  // var e = document.createEvent('UIEvent');
-  // e.touches = [{ pageX: 100, pageY: 100 }];
-  // console.log(audioCtx);
-  console.log(audioCtx.state);
-
   if (audioCtx.state === 'suspended' && enabled) {
-    console.log('suspended and enabled', audioCtx.state);
     audioCtx.resume();
 
   } else if (audioCtx.state === 'suspended') {
-    console.log('suspended', audioCtx.state);
-    oscillator.connect(gainNode);
+
+    oscillator.frequency.value = 1200;
+
+    lfo.setPeriodicWave(lfoTable);
+    lfo.frequency.value = 1 / 0.380;
+
+    //lfogain
+    lfoGain.gain.value = 450;
+
+    lfo.connect(lfoGain);
+    lfoGain.connect(oscillator.frequency)
     oscillator.connect(audioCtx.destination);
 
-    // oscillator.type = 'sine';
-    // oscillator.frequency.value = 440;
-    // oscillator.start();
-
-    oscillator.setPeriodicWave(hornTable);
-    oscillator.frequency.value = 160;
     // oscillator.connect(audioCtx.destination);
     oscillator.start(0);
+    lfo.start(0);
+
     // gainNode.gain.value = 0.1;
 
     // run once
