@@ -1,6 +1,6 @@
 {
   "name": "tetris",
-  "homepage": "https://dev.danlobo.co.uk/tetris/build/",
+  "homepage": ".",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
