@@ -136,7 +136,7 @@ export default class GridWidget extends Component {
           </form>
         </div>
         <div className="inner-container" >
-        <span>{this.state.audioUnlocked ? 'unlocked' : 'locked'}</span>
+        {/* <span>{this.state.audioUnlocked ? 'unlocked' : 'locked'}</span> */}
 
           <Grid
             grid={this.state.grid} columns="10" rows="15"

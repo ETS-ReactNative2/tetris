@@ -58,7 +58,7 @@ export default class GridItem extends Component {
 
   render() {
 
-    let itemColour = '#F1F1F1';
+    let itemColour = 'rgba(241, 241, 241, 0.8)';
 
     if (this.state.grid !== undefined && this.props.text === 1) {
       itemColour = 'rgba(1, 1, 1, .7)';

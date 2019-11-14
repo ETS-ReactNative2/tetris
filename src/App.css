@@ -51,7 +51,7 @@ html {
 }
 
 .inner-container {
-  background: #F1F1F1;
+  /* background: rgb(117, 110, 110); */
   border-radius: 5px;
   margin-bottom: 1rem;
   float: left;
@@ -68,4 +68,21 @@ html {
 
 .form-container {
   padding-top: 1rem;
+}
+
+.container-lottie {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: -1;
+}
+
+.App-lottie {
+  position: absolute;
+  top: -10%;
+  right: -10%;
+  left: -10%;
+  bottom: -10%;
 }
