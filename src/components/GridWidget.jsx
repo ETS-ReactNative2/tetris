@@ -5,6 +5,7 @@ import Button from './Button';
 // import Input from './Input';
 import Grid from './Grid';
 import { updateRow, updateColumn, generateGrid, generateStart, generateEnd, updateGravity, moveClockwise, startGame, moveRight, moveLeft, keyDown, loadLocalStorage} from '../actions/GridsterActions.js';
+import { EventEmitter } from 'events';
 
 function inputValidation(value) {
   //check for number input
@@ -31,6 +32,11 @@ export default class GridWidget extends Component {
     this._onGravity = this._onGravity.bind(this);
     this._onRight = this._onRight.bind(this);
     this._onKeyDown = this._onKeyDown.bind(this);
+    this.handleTouchStart = this.handleTouchStart.bind(this);
+    this.xDown = null;
+    this.yDown = null;
+    this.xPos = null;
+    this.yPos = null;
     this.state = {
       columns: 10,
       rows: 20,
@@ -41,12 +47,46 @@ export default class GridWidget extends Component {
     };
     loadLocalStorage();
     document.addEventListener("keydown", this._onKeyDown.bind(this));
-    window.addEventListener("keydown", function(e) {
+    document.addEventListener('touchstart', this.handleTouchStart.bind(this), false);
+    document.addEventListener('touchmove', this.handleTouchMove.bind(this), false);
+    // remove window listener - scrolls window
+    window.addEventListener("keydown", function(event) {
       // space and arrow keys
-      if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
-          e.preventDefault();
+      if([32, 37, 38, 39, 40].indexOf(event.keyCode) > -1) {
+        event.preventDefault();
       }
-  }, false);
+    }, false);
+  //   window.addEventListener("touchmove", function( event ) {
+  //     event.preventDefault();
+  //     console.log('window touch')
+  //     return;
+  //     // console.log('window touch')
+  //     // let touch = event.touches[ 0 ];
+  //     // console.log(touch);
+  //     // let oldX = this.xPos;
+  //     // let oldY = this.yPos;
+  //     // this.xPos = touch.pageX;
+  //     // // console.log(this.xPos)
+  //     // this.yPos = touch.pageY;
+  //     // console.log(this.yPos)
+
+  //     // if ( oldX == null && oldY == null ) {
+  //     //   console.log('false 1');
+  //     //   event.preventDefault();
+
+  //     //     return false;
+  //     // }
+  //     // else {
+  //     //   console.log('false 2');
+
+  //     //     if ( Math.abs( oldX-this.xPos ) > 0 || Math.abs( oldY-this.yPos ) > 0 ) {
+  //     //       console.log('false 22');
+
+  //     //         event.preventDefault();
+  //     //         return false;
+  //     //     }
+  //     // }
+  // } );
   }
 
   componentDidMount() {
@@ -56,6 +96,9 @@ export default class GridWidget extends Component {
 
   componentWillUnmount() {
       document.removeEventListener("keydown", this._onKeyDown.bind(this));
+      document.removeEventListener("touchstart", this.handleTouchStart.bind(this));
+      document.removeEventListener("touchmove", this.handleTouchMove.bind(this));
+    // restore remove window listener - scrolls window
       window.removeEventListener("keydown", function(e) {
         // space and arrow keys
         if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
@@ -77,6 +120,55 @@ export default class GridWidget extends Component {
       });
    }
   }
+
+  handleTouchStart(event) {
+    event.preventDefault();
+    // console.log('handleTouchStart');
+    this.xDown =  event.touches[0].clientX;
+    this.yDown = event.touches[0].clientY;
+}
+
+ handleTouchMove(event) {
+  // console.log('handleTouchMove');
+  event.preventDefault();
+
+  if ( ! this.xDown || ! this.yDown ) {
+      return;
+  }
+
+  this.xUp = event.touches[0].clientX;
+  this.yUp = event.touches[0].clientY;
+
+  this.xDiff = this.xDown - this.xUp;
+  this.yDiff = this.yDown - this.yUp;
+
+  if ( Math.abs( this.xDiff ) > Math.abs( this.yDiff ) ) {/*most significant*/
+      if ( this.xDiff > 0 ) {
+          /* left swipe */
+          // console.log('swipe left')
+          this._onLeft()
+
+      } else {
+          /* right swipe */
+          // console.log('swipe right')
+          this._onRight()
+      }
+  } else {
+      if ( this.yDiff > 0 ) {
+          /* up swipe */
+          // console.log('swipe up')
+          this._onRotate();
+
+      } else {
+          /* down swipe */
+          // console.log('swipe down')
+          this._onGravity();
+      }
+  }
+  /* reset values */
+  this.xDown = null;
+  this.yDown = null;
+}
 
   _onChangeCols(event) {
     let value = parseInt(event.target.value, 10);
