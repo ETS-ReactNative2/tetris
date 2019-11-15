@@ -1095,19 +1095,29 @@ function startTimerCallback() {
 function keyMap(key) {
   switch (key) {
     case 'Space':
-      dropDown();
+      if (_store.state > 0) {
+        dropDown();
+      }
       break;
     case 'ArrowDown':
-      dropDown();
+      if (_store.state > 0) {
+        dropDown();
+      }
       break;
     case 'ArrowUp':
-      turnClockwise();
+      if (_store.state > 0) {
+        turnClockwise();
+      }
       break;
     case 'ArrowLeft':
-      moveLeft();
+      if (_store.state > 0) {
+        moveLeft();
+      }
       break;
     case 'ArrowRight':
-      moveRight();
+      if (_store.state > 0) {
+        moveRight();
+      }
       break;
     default:
       return;
@@ -1144,25 +1154,33 @@ AppDispatcher.register((payload) => {
 
     case GridsterConstants.UPDATE_GRAVITY:
       // moveDown();
-      dropDown();
+      if (_store.state > 0) {
+        dropDown();
+      }
       GridsterStore.emit(CHANGE_EVENT);
       break;
 
     case GridsterConstants.MOVE_RIGHT:
       // call function to update store here = add 10 cells to beginning - remove 10 cells at the end
-      moveRight();
+      if (_store.state > 0) {
+        moveRight();
+      }
       GridsterStore.emit(CHANGE_EVENT);
       break;
 
     case GridsterConstants.MOVE_LEFT:
       // call function to update store here = add 10 cells to beginning - remove 10 cells at the end
-      moveLeft();
+      if (_store.state > 0) {
+        moveLeft();
+      }
       GridsterStore.emit(CHANGE_EVENT);
       break;
 
     case GridsterConstants.MOVE_CLOCKWISE:
       // call function to update store here = add 10 cells to beginning - remove 10 cells at the end
-      turnClockwise();
+      if (_store.state > 0) {
+        turnClockwise();
+      }
       GridsterStore.emit(CHANGE_EVENT);
       break;
 
