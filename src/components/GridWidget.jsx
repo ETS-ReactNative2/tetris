@@ -5,7 +5,7 @@ import Button from './Button';
 // import Input from './Input';
 import Grid from './Grid';
 import { updateRow, updateColumn, generateGrid, generateStart, generateEnd, updateGravity, moveClockwise, startGame, moveRight, moveLeft, keyDown, loadLocalStorage} from '../actions/GridsterActions.js';
-import { EventEmitter } from 'events';
+// import { EventEmitter } from 'events';
 
 function inputValidation(value) {
   //check for number input

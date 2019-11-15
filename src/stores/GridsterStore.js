@@ -9,7 +9,7 @@ import { OrganTables } from './OrganTables';
 import { DFT } from 'dsp.js';
 
 // import '../webkitAudioContextMonkeyPatch';
-import { AudioContext, OfflineAudioContext, OscillatorNode } from 'standardized-audio-context';
+import { AudioContext } from 'standardized-audio-context';
 // var dft = new DFT(1024, 44100);
 // console.log(dft);
 
@@ -202,12 +202,12 @@ class GridsterStoreClass extends EventEmitter {
 // dispatcher and export for React components
 const GridsterStore = new GridsterStoreClass();
 
-var isUnlocked = false;
-var buffer;
-var source;
+// var isUnlocked = false;
+// var buffer;
+// var source;
 
 const audioCtx = new AudioContext();
-const gainNode = audioCtx.createGain();
+// const gainNode = audioCtx.createGain();
 
 // Source: https://chromium.googlecode.com/svn/trunk/samples/audio/wave-tables/Organ_2
 var tables = OrganTables;
@@ -215,7 +215,7 @@ var tables = OrganTables;
 const c = tables.real.length;
 var real = new Float32Array(c);
 var imag = new Float32Array(c);
-for (var i = 0; i < c; i++) {
+for (let i = 0; i < c; i++) {
   real[i] = tables.real[i];
   imag[i] = tables.imag[i];
 }
@@ -232,7 +232,7 @@ function sharkFin(x) {
 
 var count = 128;
 var sharkFinValues = new Array(count);
-for (var i = 0; i < count; i++) {
+for (let i = 0; i < count; i++) {
   sharkFinValues[i] = sharkFin(i / count);
 }
 // console.log(sharkFinValues);
@@ -241,7 +241,7 @@ for (var i = 0; i < count; i++) {
 var ft = new DFT(sharkFinValues.length);
 ft.forward(sharkFinValues);
 var lfoTable = audioCtx.createPeriodicWave(ft.real, ft.imag);
-var lfoGain = audioCtx.createGain();
+// var lfoGain = audioCtx.createGain();
 // var hornTable = audioCtx.createPeriodicWave(real, imag);
 
 // create Oscillator and gain node
@@ -250,7 +250,7 @@ var enabled = false;
 // const real = new Float32Array([0, 0.4, 0.4, 1, 1, 1, 0.3, 0.7, 0.6, 0.5, 0.9, 0.8]);
 // const imag = new Float32Array(real.length);
 // console.log(real, real.length, imag);
-const hornTable = audioCtx.createPeriodicWave(real, imag);
+// const hornTable = audioCtx.createPeriodicWave(real, imag);
 // console.log(hornTable);
 
 var lfo = audioCtx.createOscillator();
@@ -278,8 +278,6 @@ function play() {
     // oscillator.connect(audioCtx.destination);
     oscillator.start(0);
     lfo.start(0);
-
-    // gainNode.gain.value = 0.1;
 
     // run once
     enabled = true;
@@ -311,30 +309,10 @@ function play() {
   }
 
   setTimeout(function() {
-    // console.log(audioCtx.currentTime);
-    // gainNode.gain.setValueAtTime(0, audioCtx.currentTime + 1);
-    // oscillatorNode.disconnect(audioCtx.destination);
-    // gainNode.gain.value = 0;
     audioCtx.suspend();
-    // gainNode.gain.value = 0;
-
-    // console.log(audioCtx.state);
   }, 1000);
 }
 
-// function voiceMute() {
-//   let audioCtx = new AudioContext();
-//   let gainNode = audioCtx.createGain();
-//   if (mute.id == "") {
-//     gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-//     mute.id = "activated";
-//     mute.innerHTML = "Unmute";
-//   } else {
-//     gainNode.gain.setValueAtTime(1, audioCtx.currentTime);
-//     mute.id = "";
-//     mute.innerHTML = "Mute";
-//   }
-// }
 
 // function stop() {
 //   osc = window.audioContext.createOscillator();
